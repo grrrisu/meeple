@@ -1,5 +1,7 @@
 # Meeple
 
+[![Elixir CI](https://github.com/grrrisu/meeple/actions/workflows/elixir.yml/badge.svg)](https://github.com/grrrisu/meeple/actions/workflows/elixir.yml)
+
 A tactical game inspired by board games.
 
 ## Etymology
