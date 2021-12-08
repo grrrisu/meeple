@@ -25,7 +25,15 @@ config :meeple_web, MeepleWeb.Endpoint,
   secret_key_base: "khrCd8M1tl+N9EluYb7wzKmay9TSNTyYEFhZPv3OE63QKGlHO/N0Go1rcfznr+la",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    npx: [
+      "tailwindcss",
+      "--input=css/app.css",
+      "--output=../priv/static/assets/app.css",
+      "--postcss",
+      "--watch",
+      cd: Path.expand("../apps/meeple_web/assets", __DIR__)
+    ]
   ]
 
 # ## SSL Support
