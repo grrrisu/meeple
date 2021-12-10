@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .map {
+    @apply grid auto-rows-fr bg-gray-50 border-l border-b border-gray-900;
+  }
+
+  .field {
+    @apply border-t border-r border-gray-900;
+    height: 50px;
+    width: 500;
+  }
+}
+
 .board {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
