@@ -3,7 +3,7 @@ defmodule MeepleWeb.BoardLive.Pawns do
 
   def render(assigns) do
     ~H"""
-    <div id="pawns">pawns selection go here</div>
+    <div id="pawns" class="board-pawns">pawns selection go here</div>
     """
   end
 end

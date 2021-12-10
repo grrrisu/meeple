@@ -3,7 +3,8 @@ defmodule MeepleWeb.BoardLive.Map do
 
   def render(assigns) do
     ~H"""
-    <div id="map">map goes here</div>
+    <div id="map" class="board-map map">
+    </div>
     """
   end
 end

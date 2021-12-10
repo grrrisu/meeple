@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.board {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "header header header"
+    "time time time"
+    "map map map"
+    "pawns location location";
+}
+
+.board-header {
+  grid-area: header;
+}
+
+.board-time {
+  grid-area: time;
+}
+
+.board-map {
+  grid-area: map;
+}
+
+.board-pawns {
+  grid-area: pawns;
+}
+
+.board-location {
+  grid-area: location;
+}

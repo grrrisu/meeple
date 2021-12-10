@@ -3,7 +3,7 @@ defmodule MeepleWeb.BoardLive.Location do
 
   def render(assigns) do
     ~H"""
-    <div id="location">location details go here</div>
+    <div id="location" class="board-location">location details go here</div>
     """
   end
 end

@@ -9,10 +9,13 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <h1>The Board</h1>
-      <.live_component module={Pawns} id="pawns" />
+    <div class="board">
+      <div class="board-header">
+        <h1>The Board</h1>
+      </div>
+      <div class="board-time">Sunny</div>
       <.live_component module={Map} id="map" />
+      <.live_component module={Pawns} id="pawns" />
       <.live_component module={Location} id="location" />
     </div>
     """
