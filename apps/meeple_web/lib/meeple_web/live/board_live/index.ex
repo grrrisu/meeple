@@ -13,8 +13,11 @@ defmodule MeepleWeb.BoardLive.Index do
       <div class="board-header">
         <h1>The Board</h1>
       </div>
-      <div class="board-time">Sunny</div>
-      <.live_component module={Map} id="map" />
+      <div class="board-menu">menu</div>
+      <div class="board-map border-8 border-gray-900">
+        <div>Sunny</div>
+        <.live_component module={Map} id="map" />
+      </div>
       <.live_component module={Pawns} id="pawns" />
       <.live_component module={Location} id="location" />
     </div>

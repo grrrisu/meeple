@@ -20,7 +20,7 @@
   grid-template-rows: auto;
   grid-template-areas:
     "header header header"
-    "time time time"
+    "menu menu menu"
     "map map map"
     "pawns location location";
 }
@@ -29,8 +29,8 @@
   grid-area: header;
 }
 
-.board-time {
-  grid-area: time;
+.board-menu {
+  grid-area: menu;
 }
 
 .board-map {
