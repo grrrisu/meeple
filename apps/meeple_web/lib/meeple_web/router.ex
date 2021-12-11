@@ -40,6 +40,11 @@ defmodule MeepleWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: MeepleWeb.Telemetry
     end
+
+    scope "/dev" do
+      pipe_through :browser
+      get "/colors", MeepleWeb.Dev.PageController, :colors
+    end
   end
 
   # Enables the Swoosh mailbox preview in development.
