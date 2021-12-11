@@ -4,6 +4,6 @@ defmodule MeepleWeb.BoardLive.PawnsTest do
 
   test "setup board", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/board")
-    view |> element("#mpawns") |> has_element?()
+    assert view |> has_element?("#pawns")
   end
 end

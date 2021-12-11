@@ -4,6 +4,6 @@ defmodule MeepleWeb.BoardLive.LocationTest do
 
   test "setup board", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/board")
-    view |> element("#location") |> has_element?()
+    assert view |> has_element?("#location")
   end
 end
