@@ -4,6 +4,6 @@ defmodule MeepleWeb.BoardLive.MapTest do
 
   test "setup board", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/board")
-    view |> element("#map") |> has_element?()
+    assert view |> has_element?("#map")
   end
 end
