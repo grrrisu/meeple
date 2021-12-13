@@ -33,6 +33,12 @@ config :meeple_web, MeepleWeb.Endpoint,
       "--postcss",
       "--watch",
       cd: Path.expand("../apps/meeple_web/assets", __DIR__)
+    ],
+    npx: [
+      "cpx",
+      "./node_modules/line-awesome/dist/line-awesome/fonts/*",
+      "../priv/static/fonts",
+      cd: Path.expand("../apps/meeple_web/assets", __DIR__)
     ]
   ]
 
