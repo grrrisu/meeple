@@ -65,7 +65,7 @@ module.exports = {
           800: "#5C6D12",
           900: "#36400A",
         },
-        yellowish: {
+        mustard: {
           50: "#FFFFF2",
           100: "#FFFFD9",
           200: "#FFFFBF",
