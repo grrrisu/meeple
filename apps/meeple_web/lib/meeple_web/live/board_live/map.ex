@@ -11,7 +11,7 @@ defmodule MeepleWeb.BoardLive.Map do
       style="grid-template-columns: repeat(15, 75px); grid-template-rows: repeat(7, 75px)">
       <%= for _row <- 0..6 do %>
         <%= for _column <- 0..14 do %>
-          <div class="field">x</div>
+          <div class="field"></div>
         <% end %>
       <% end %>
     </div>
