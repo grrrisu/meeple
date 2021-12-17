@@ -8,12 +8,9 @@ defmodule Meeple.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
       Meeple.Repo,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: Meeple.PubSub}
-      # Start a worker by calling: Meeple.Worker.start_link(arg)
-      # {Meeple.Worker, arg}
+      {Phoenix.PubSub, name: Meeple.PubSub},
+      Meeple.Territory
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Meeple.Supervisor)
