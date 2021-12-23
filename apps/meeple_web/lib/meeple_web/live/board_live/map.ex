@@ -20,10 +20,10 @@ defmodule MeepleWeb.BoardLive.Map do
       <div class="justify-self-end"><i class="las la-caret-left la-3x "></i></div>
       <div
         class="grid place-content-center"
-        style={css_grid_template(@territory)}>
+        style={css_grid_template(@width, @height)}>
         <%= for y <- (@height - 1)..0 do %>
           <%= for x <- 0..(@width - 1) do %>
-            <div class="field" id={"field-#{x}-#{y}"}>[<%= x %>,<%= y %>] <br/> <%= field(@territory, x, y) %></div>
+            <.field x={x} y={y} territory={@territory} />
           <% end %>
         <% end %>
       </div>
@@ -33,13 +33,21 @@ defmodule MeepleWeb.BoardLive.Map do
     """
   end
 
-  def css_grid_template(territory) do
-    width = Grid.width(territory)
-    height = Grid.height(territory)
+  def css_grid_template(width, height) do
     "grid-template-columns: repeat(#{width}, 75px); grid-template-rows: repeat(#{height}, 75px)"
   end
 
-  def field(territory, x, y) do
+  def field(assigns) do
+    ~H"""
+    <div class="field" id={"field-#{assigns.x}-#{assigns.y}"}>
+      [<%= assigns.x %>,<%= assigns.y %>]
+      <br/>
+      <%= vegetation_type(assigns.territory, assigns.x, assigns.y) %>
+    </div>
+    """
+  end
+
+  def vegetation_type(territory, x, y) do
     Grid.get(territory, x, y)
   end
 end
