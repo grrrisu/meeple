@@ -42,12 +42,14 @@ defmodule MeepleWeb.BoardLive.Map do
     <div class="field" id={"field-#{assigns.x}-#{assigns.y}"}>
       [<%= assigns.x %>,<%= assigns.y %>]
       <br/>
-      <%= vegetation_type(assigns.territory, assigns.x, assigns.y) %>
+      <span class="text-xs">
+        <%= vegetation_type(assigns.territory, assigns.x, assigns.y) %>
+      </span>
     </div>
     """
   end
 
   def vegetation_type(territory, x, y) do
-    Grid.get(territory, x, y)
+    Grid.get(territory, x, y) |> inspect()
   end
 end
