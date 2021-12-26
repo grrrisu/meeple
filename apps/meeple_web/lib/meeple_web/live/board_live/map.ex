@@ -3,6 +3,7 @@ defmodule MeepleWeb.BoardLive.Map do
   require Logger
 
   alias Sim.Grid
+  alias Meeple.Territory
 
   def update(assigns, socket) do
     {:ok,
@@ -40,7 +41,10 @@ defmodule MeepleWeb.BoardLive.Map do
 
   def handle_event("discover", %{"x" => x, "y" => y}, socket) do
     Logger.debug("discover [#{x}, #{y}]")
-    {:noreply, socket}
+    [x, y] = [String.to_integer(x), String.to_integer(y)]
+    field = Territory.discover(x, y)
+    new_terriory = Grid.put(socket.assigns.territory, x, y, field)
+    {:noreply, assign(socket, territory: new_terriory)}
   end
 
   def field(assigns) do
