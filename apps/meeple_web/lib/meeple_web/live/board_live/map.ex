@@ -1,5 +1,6 @@
 defmodule MeepleWeb.BoardLive.Map do
   use MeepleWeb, :live_component
+  require Logger
 
   alias Sim.Grid
 
@@ -23,7 +24,7 @@ defmodule MeepleWeb.BoardLive.Map do
         style={css_grid_template(@width, @height)}>
         <%= for y <- (@height - 1)..0 do %>
           <%= for x <- 0..(@width - 1) do %>
-            <.field x={x} y={y} territory={@territory} />
+            <.field x={x} y={y} territory={@territory} myself={@myself} />
           <% end %>
         <% end %>
       </div>
@@ -37,11 +38,18 @@ defmodule MeepleWeb.BoardLive.Map do
     "grid-template-columns: repeat(#{width}, 75px); grid-template-rows: repeat(#{height}, 75px)"
   end
 
+  def handle_event("discover", %{"x" => x, "y" => y}, socket) do
+    Logger.debug("discover [#{x}, #{y}]")
+    {:noreply, socket}
+  end
+
   def field(assigns) do
     f = Grid.get(assigns.territory, assigns.x, assigns.y)
 
     ~H"""
-    <div class="field text-[0.5rem]" id={"field-#{assigns.x}-#{assigns.y}"}>
+    <div
+      class="field text-[0.5rem]" id={"field-#{assigns.x}-#{assigns.y}"}
+      phx-click="discover" phx-value-x={assigns.x} phx-value-y={assigns.y} phx-target={@myself}>
       [<%= assigns.x %>,<%= assigns.y %>]
       <br/>
       <%= f[:vegetation] %>
