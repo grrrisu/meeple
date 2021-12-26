@@ -38,18 +38,22 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def field(assigns) do
+    f = Grid.get(assigns.territory, assigns.x, assigns.y)
+
     ~H"""
-    <div class="field" id={"field-#{assigns.x}-#{assigns.y}"}>
+    <div class="field text-[0.5rem]" id={"field-#{assigns.x}-#{assigns.y}"}>
       [<%= assigns.x %>,<%= assigns.y %>]
       <br/>
-      <span class="text-xs">
-        <%= vegetation_type(assigns.territory, assigns.x, assigns.y) %>
-      </span>
+      <%= f[:vegetation] %>
+      <br/>
+      <%= f[:building] %>
+      <%= f[:flora] && List.first(f[:flora]) %>
+      <br/>
+      <%= f[:herbivore] && List.first(f[:herbivore]) %>
+      <br />
+      <%= f[:predator] && List.first(f[:predator]) %>
+      <br />
     </div>
     """
-  end
-
-  def vegetation_type(territory, x, y) do
-    Grid.get(territory, x, y) |> inspect()
   end
 end
