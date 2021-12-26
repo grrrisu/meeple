@@ -12,6 +12,14 @@ defmodule Meeple.Territory do
     Agent.get(pid, &get_grid/1)
   end
 
+  def discover(x, y, pid \\ __MODULE__) do
+    Agent.get_and_update(pid, fn state ->
+      new_fog = Grid.put(state.fog_of_war, x, y, 5)
+      field = get_field(state.ground, 5, x, y)
+      {field, %{state | fog_of_war: new_fog}}
+    end)
+  end
+
   defp create do
     %{
       fog_of_war: Grid.create(15, 7, &create_fog/2),
@@ -26,11 +34,15 @@ defmodule Meeple.Territory do
 
   defp get_grid(%{fog_of_war: fog, ground: ground}) do
     Grid.create(Grid.width(fog), Grid.height(fog), fn x, y ->
-      case Grid.get(fog, x, y) do
-        5 -> Grid.get(ground, x, y)
-        1 -> %{vegetation: Grid.get(ground, x, y) |> Map.get(:vegetation)}
-        0 -> %{}
-      end
+      get_field(ground, Grid.get(fog, x, y), x, y)
     end)
+  end
+
+  defp get_field(ground, visability, x, y) do
+    case visability do
+      5 -> Grid.get(ground, x, y)
+      1 -> %{vegetation: Grid.get(ground, x, y) |> Map.get(:vegetation)}
+      0 -> %{}
+    end
   end
 end
