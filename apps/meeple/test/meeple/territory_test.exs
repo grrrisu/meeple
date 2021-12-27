@@ -6,7 +6,7 @@ defmodule Meeple.TerritoryTest do
 
   setup do
     pid = start_supervised!({Territory, name: :test_territory})
-    %{territory: Territory.load("test", pid), pid: pid}
+    %{territory: Territory.create("test", pid), pid: pid}
   end
 
   test "get headquarter", %{territory: territory} do
