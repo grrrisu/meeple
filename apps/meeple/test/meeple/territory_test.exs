@@ -4,17 +4,23 @@ defmodule Meeple.TerritoryTest do
   alias Meeple.Territory
   alias Sim.Grid
 
-  setup_all do
+  setup do
     pid = start_supervised!({Territory, name: :test_territory})
-    %{territory: Territory.get(pid)}
+    %{territory: Territory.load("test", pid), pid: pid}
   end
 
   test "get headquarter", %{territory: territory} do
-    field = Grid.get(territory, 7, 1)
+    field = Grid.get(territory, 1, 1)
     assert :headquarter = field[:building]
   end
 
   test "fog of war", %{territory: territory} do
     assert %{} = Grid.get(territory, 0, 0)
+  end
+
+  test "discover", %{territory: territory, pid: pid} do
+    assert %{} = Grid.get(territory, 1, 2)
+    field = Territory.discover(1, 2, pid)
+    assert %{vegetation: :planes} = field
   end
 end

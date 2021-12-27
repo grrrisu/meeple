@@ -9,7 +9,12 @@ defmodule Meeple.Territory.One do
     }
   end
 
-  def create(width, height) do
+  def create_fog(7, 1), do: 5
+  def create_fog(4, 5), do: 1
+  def create_fog(11, 5), do: 1
+  def create_fog(_x, _y), do: 0
+
+  def create_ground(width, height) do
     [x, y, z] = Enum.shuffle([:home_hills, :home_mountains, :home_woods])
     [a, b, c, d] = Enum.shuffle([:woods, :planes, :hills, :lake])
     [m, n, o, p] = Enum.shuffle([:mountains, :mountains, :enemy_hills, :swamp])

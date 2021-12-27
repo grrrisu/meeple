@@ -3,8 +3,8 @@ defmodule MeepleWeb.BoardLive.Index do
 
   alias MeepleWeb.BoardLive.{Map, Pawns, Location}
 
-  def mount(_params, _session, socket) do
-    {:ok, socket |> assign(territory: load_territory())}
+  def mount(%{"territory" => territory}, _session, socket) do
+    {:ok, socket |> assign(territory: load_territory(territory))}
   end
 
   def render(assigns) do
@@ -24,7 +24,7 @@ defmodule MeepleWeb.BoardLive.Index do
     """
   end
 
-  defp load_territory() do
-    Meeple.Territory.get()
+  defp load_territory(territory) do
+    Meeple.Territory.load(territory)
   end
 end
