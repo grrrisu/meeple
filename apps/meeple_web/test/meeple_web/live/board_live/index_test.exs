@@ -3,7 +3,7 @@ defmodule MeepleWeb.BoardLive.IndexTest do
   import Phoenix.LiveViewTest
 
   test "setup board", %{conn: conn} do
-    conn = get(conn, "/board")
+    conn = get(conn, "/board/test")
     assert html_response(conn, 200) =~ "The Board"
 
     {:ok, _view, html} = live(conn)

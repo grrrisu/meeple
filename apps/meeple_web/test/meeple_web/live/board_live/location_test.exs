@@ -3,7 +3,7 @@ defmodule MeepleWeb.BoardLive.LocationTest do
   import Phoenix.LiveViewTest
 
   test "setup board", %{conn: conn} do
-    {:ok, view, _html} = live(conn, "/board")
+    {:ok, view, _html} = live(conn, "/board/test")
     assert view |> has_element?("#location")
   end
 end

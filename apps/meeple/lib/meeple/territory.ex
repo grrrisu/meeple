@@ -3,13 +3,26 @@ defmodule Meeple.Territory do
 
   alias Sim.Grid
   alias Meeple.Territory.One
+  alias Meeple.Territory.Test, as: TestTerritory
 
   def start_link(args) do
-    Agent.start_link(&create/0, name: args[:name] || __MODULE__)
+    Agent.start_link(fn -> nil end, name: args[:name] || __MODULE__)
   end
 
   def get(pid \\ __MODULE__) do
     Agent.get(pid, &get_grid/1)
+  end
+
+  def load(name, pid \\ __MODULE__) do
+    Agent.get_and_update(pid, fn state ->
+      state =
+        case state do
+          nil -> create(name)
+          %{} -> state
+        end
+
+      {get_grid(state), state}
+    end)
   end
 
   def discover(x, y, pid \\ __MODULE__) do
@@ -20,17 +33,15 @@ defmodule Meeple.Territory do
     end)
   end
 
-  defp create do
+  defp create("test"), do: create(TestTerritory, 3, 4)
+  defp create("one"), do: create(One, 15, 7)
+
+  defp create(module, width, height) when is_atom(module) do
     %{
-      fog_of_war: Grid.create(15, 7, &create_fog/2),
-      ground: One.create(15, 7)
+      fog_of_war: Grid.create(width, height, &module.create_fog/2),
+      ground: module.create_ground(width, height)
     }
   end
-
-  defp create_fog(7, 1), do: 5
-  defp create_fog(4, 5), do: 1
-  defp create_fog(11, 5), do: 1
-  defp create_fog(_x, _y), do: 0
 
   defp get_grid(%{fog_of_war: fog, ground: ground}) do
     Grid.create(Grid.width(fog), Grid.height(fog), fn x, y ->

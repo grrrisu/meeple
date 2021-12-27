@@ -18,7 +18,7 @@ defmodule MeepleWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    live "/board", BoardLive.Index
+    live "/board/:territory", BoardLive.Index
   end
 
   # Other scopes may use custom stacks.
