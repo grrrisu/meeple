@@ -13,6 +13,13 @@ defmodule Meeple.Territory do
     Agent.get(pid, &get_grid/1)
   end
 
+  def create(name, pid \\ __MODULE__) do
+    Agent.get_and_update(pid, fn _ ->
+      state = create_grid(name)
+      {get_grid(state), state}
+    end)
+  end
+
   def load(name, pid \\ __MODULE__) do
     Agent.get_and_update(pid, fn state ->
       state =
@@ -33,15 +40,17 @@ defmodule Meeple.Territory do
     end)
   end
 
-  defp create("test"), do: create(TestTerritory, 3, 4)
-  defp create("one"), do: create(One, 15, 7)
+  defp create_grid("test"), do: create_grid(TestTerritory, 3, 4)
+  defp create_grid("one"), do: create_grid(One, 15, 7)
 
-  defp create(module, width, height) when is_atom(module) do
+  defp create_grid(module, width, height) when is_atom(module) do
     %{
       fog_of_war: Grid.create(width, height, &module.create_fog/2),
       ground: module.create_ground(width, height)
     }
   end
+
+  defp get_grid(nil), do: nil
 
   defp get_grid(%{fog_of_war: fog, ground: ground}) do
     Grid.create(Grid.width(fog), Grid.height(fog), fn x, y ->
