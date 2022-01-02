@@ -9,6 +9,10 @@ defmodule Meeple.Territory do
     Agent.start_link(fn -> nil end, name: args[:name] || __MODULE__)
   end
 
+  def exists?(pid \\ __MODULE__) do
+    Agent.get(pid, fn root -> !is_nil(root) end)
+  end
+
   def get(pid \\ __MODULE__) do
     Agent.get(pid, &get_grid/1)
   end

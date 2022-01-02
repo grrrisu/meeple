@@ -1,7 +1,9 @@
 <h1>Meeple</h1>
 <p>A tactical game inspired by board games.</p>
 
-<p><a href="/board" class="btn btn-action">Go to current board</a></p>
+<%= if @territory_exists do %>
+  <p><a href="/board" class="btn btn-action">Go to current board</a></p>
+<% end %>
 <p><a href="/board/one" class="btn btn-action">Create Board One</a></p>
 <p><a href="/board/test" class="btn btn-action">Create Test Board</a></p>
 
