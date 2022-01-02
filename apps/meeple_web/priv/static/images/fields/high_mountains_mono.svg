@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-1,-114)">
+        <rect id="High-Mountains-Mono" serif:id="High Mountains Mono" x="1" y="114" width="100" height="100" style="fill:white;"/>
+        <clipPath id="_clip1">
+            <rect id="High-Mountains-Mono1" serif:id="High Mountains Mono" x="1" y="114" width="100" height="100"/>
+        </clipPath>
+        <g clip-path="url(#_clip1)">
+            <rect x="-3" y="112" width="116" height="47" style="fill:rgb(249,250,251);stroke:black;stroke-width:1px;"/>
+            <g id="High-Mountains" serif:id="High Mountains">
+                <g id="Back-Mountains" serif:id="Back Mountains">
+                    <path d="M-2,146L11,141L22,130L29,128L43,130L48,144L57,146L65,150L76,145L84.5,140L92,141L99,147L108,151L107,215L-2,217L-2,146Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:1px;"/>
+                    <path d="M22,130L28,133L35,134L33,137L39,140L34.593,142.966L44,149L43,139L45,136L43,130L29,128L22,130Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:1px;"/>
+                    <path d="M85,140L92,141L98,146L91,148L96,151L88,156L89,151L84,146L88,144L85,140Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:1px;"/>
+                    <path d="M48,144L57,146L64,149L77,144L81,150L76,149L78,153L71,149L60,153L53,149L48,144Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:1px;"/>
+                    <path d="M84,157L86,173L99,181L108,180L106,170L98,160L90,161L84,157Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:1px;"/>
+                    <g transform="matrix(0.99112,-0.186095,0.179819,0.957698,-30.1449,3.50505)">
+                        <path d="M20,149L24,161L32,175L47,188L69,195L64.5,180.31L52,173L42,168L38,170L35,166L29,161L20,149Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:1.01px;"/>
+                    </g>
+                </g>
+                <g id="Front-Mountains" serif:id="Front Mountains">
+                    <path d="M0,183L12,172L35,174L47,179L58,189L78,166L89,170L95,178L104,181L104,214L66,216L0,217L0,183Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:1px;"/>
+                    <g transform="matrix(1.55814,0,0,1,-19.5349,0)">
+                        <path d="M35,174L44,195L47.836,216L64,215L78,216L70,201L58,189L47,179L35,174Z" style="fill:rgb(249,250,251);stroke:black;stroke-width:0.76px;"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
