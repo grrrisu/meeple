@@ -54,18 +54,23 @@ defmodule MeepleWeb.BoardLive.Map do
     <div
       class="field text-[0.5rem]" id={"field-#{assigns.x}-#{assigns.y}"}
       phx-click="discover" phx-value-x={assigns.x} phx-value-y={assigns.y} phx-target={@myself}>
-      [<%= assigns.x %>,<%= assigns.y %>]
-      <br/>
-      <%= f[:vegetation] %>
-      <br/>
-      <%= f[:building] %>
-      <%= f[:flora] && List.first(f[:flora]) %>
-      <br/>
-      <%= f[:herbivore] && List.first(f[:herbivore]) %>
-      <br />
-      <%= f[:predator] && List.first(f[:predator]) %>
-      <br />
+      <%= cond do %>
+        <% f[:building] -> %>
+          <image src="/images/fields/homebase.svg" class="w-full"/>
+        <% f[:vegetation] -> %>
+          <image src={"/images/fields/#{vegetation_image(f[:vegetation])}"} class="w-full"/>
+        <% true -> %>
+      <% end %>
     </div>
     """
   end
+
+  defp vegetation_image(:high_mountains), do: "high_mountains.svg"
+  defp vegetation_image(:mountains), do: "mountains.svg"
+  defp vegetation_image(:hills), do: "hills.svg"
+  defp vegetation_image(:woods), do: "woods.svg"
+  defp vegetation_image(:planes), do: "planes.svg"
+  defp vegetation_image(:swamps), do: "swamps.svg"
+  defp vegetation_image(:lake), do: "lake.svg"
+  defp vegetation_image(_any), do: "unknown.svg"
 end

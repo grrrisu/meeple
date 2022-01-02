@@ -16,7 +16,7 @@ defmodule MeepleWeb.BoardLive.MapTest do
 
   test "field", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/board")
-    assert view |> has_element?("#field-1-1", "headquarter")
+    assert view |> element("#field-1-1") |> render() =~ "homebase.svg"
   end
 
   test "discover", %{conn: conn} do
@@ -27,6 +27,6 @@ defmodule MeepleWeb.BoardLive.MapTest do
     |> render_click()
 
     {:ok, view, _html} = live(conn, "/board")
-    assert view |> element("#field-1-2") |> render() =~ "planes"
+    assert view |> element("#field-1-2") |> render() =~ "planes.svg"
   end
 end
