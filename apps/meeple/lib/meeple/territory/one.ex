@@ -129,40 +129,40 @@ defmodule Meeple.Territory.One do
 
   def group(:home_woods) do
     [
-      %{vegetation: :woods, flora: [:berry, 3], predator: [:fox, 3]},
-      %{vegetation: :woods, flora: [:berry, 4], herbivore: [:rabbit, 5]},
+      %{vegetation: :woods, predator: [:fox, 3]},
+      %{vegetation: :woods, herbivore: [:rabbit, 5]},
       %{vegetation: :woods, flora: [:berry, 4], herbivore: [:rabbit, 4]},
-      %{vegetation: :woods, flora: [:root, 4], herbivore: [:rabbit, 3]},
-      %{vegetation: :woods, flora: [:root, 4], herbivore: [:partridge, 3]},
-      %{vegetation: :woods, flora: [:mushroom, 4], herbivore: [:squirell, 3]},
-      %{vegetation: :woods, flora: [:nut, 4], herbivore: [:squirell, 3]},
-      %{vegetation: :woods, flora: [:nut, 4], danger: [:snake, 1]}
+      %{vegetation: :woods, flora: [:berry, 4], herbivore: [:partridge, 3]},
+      %{vegetation: :woods, flora: [:berry, 4], herbivore: [:partridge, 3]},
+      %{vegetation: :woods, flora: [:berry, 4], herbivore: [:boar, 8]},
+      %{vegetation: :woods, flora: [:berry, 4]},
+      %{vegetation: :woods, danger: [:snake, 1]}
     ]
   end
 
   def group(:home_mountains) do
     [
-      %{vegetation: :mountains, flora: [:berry, 3], predator: [:lynx, 3]},
-      %{vegetation: :mountains, flora: [:berry, 4], herbivore: [:rabbit, 5]},
-      %{vegetation: :mountains, flora: [:berry, 4], herbivore: [:goat, 4]},
-      %{vegetation: :mountains, flora: [:root, 4], herbivore: [:goat, 3]},
-      %{vegetation: :mountains, flora: [:root, 4], herbivore: [:partridge, 3]},
-      %{vegetation: :mountains, flora: [:mushroom, 4], herbivore: [:partridge, 3]},
-      %{vegetation: :mountains, flora: [:nut, 4], danger: [:rockfall, 2]},
-      %{vegetation: :mountains, flora: [:nut, 4], danger: [:snake, 1]}
+      %{vegetation: :mountains, predator: [:lynx, 3]},
+      %{vegetation: :mountains, herbivore: [:rabbit, 5]},
+      %{vegetation: :mountains, herbivore: [:goat, 4]},
+      %{vegetation: :mountains, flora: [:berry, 4], herbivore: [:goat, 3]},
+      %{vegetation: :mountains, flora: [:berry, 4]},
+      %{vegetation: :mountains, flora: [:berry, 4], herbivore: [:partridge, 3]},
+      %{vegetation: :mountains, danger: [:rockfall, 2]},
+      %{vegetation: :mountains, danger: [:snake, 1]}
     ]
   end
 
   def group(:home_hills) do
     [
-      %{vegetation: :hills, flora: [:berry, 2], predator: [:fox, 3]},
-      %{vegetation: :hills, flora: [:berry, 3], herbivore: [:rabbit, 5]},
-      %{vegetation: :hills, flora: [:berry, 2], herbivore: [:rabbit, 4]},
-      %{vegetation: :hills, flora: [:root, 4], herbivore: [:partridge, 3]},
-      %{vegetation: :hills, flora: [:root, 4], herbivore: [:partridge, 3]},
-      %{vegetation: :hills, flora: [:mushroom, 4], herbivore: [:partridge, 3]},
-      %{vegetation: :hills, flora: [:mushroom, 3]},
-      %{vegetation: :hills, flora: [:herbs, 2]}
+      %{vegetation: :hills, predator: [:fox, 3]},
+      %{vegetation: :hills, herbivore: [:partridge, 5]},
+      %{vegetation: :hills, flora: [:berry, 4], herbivore: [:partridge, 4]},
+      %{vegetation: :hills, flora: [:berry, 4], herbivore: [:partridge, 3]},
+      %{vegetation: :hills, flora: [:berry, 4], herbivore: [:rabbit, 3]},
+      %{vegetation: :hills, flora: [:berry, 4]},
+      %{vegetation: :hills},
+      %{vegetation: :hills, danger: [:snake, 1]}
     ]
   end
 
