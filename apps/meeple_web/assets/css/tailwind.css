@@ -20,6 +20,10 @@
   }
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 .board {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
