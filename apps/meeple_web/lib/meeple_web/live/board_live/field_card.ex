@@ -17,16 +17,14 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   end
 
   def render(%{field: f} = assigns) do
-    Logger.debug("render field #{inspect(f)}")
-
     ~H"""
     <div>
       <.card_border let={field} innerfield={f}>
         <div class="border border-gray-800">
-          <h2><%= field[:vegetation] |> Atom.to_string() |> String.capitalize() %></h2>
+          <h2><%= (field[:building] || field[:vegetation]) |> Atom.to_string() |> String.capitalize() %></h2>
           <div class="" style="height: 392px">
             <div class="my-2 mx-auto">
-              <image src={"/images/fields/#{Map.vegetation_image(field[:vegetation])}"} height="50"/>
+              <image src={"/images/fields/#{(field[:building] && "homebase.svg") || Map.vegetation_image(field[:vegetation])}"} height="50"/>
             </div>
             <p>
               Description: <%= field[:vegetation] %>
@@ -58,6 +56,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   def card_border(assigns) do
     ~H"""
     <div
+      id="field-card"
       class="bg-gray-50 rounded-lg drop-shadow-lg border border-gray-800 p-4 absolute"
       :class="showFieldCard || 'hidden'"
       x-cloak

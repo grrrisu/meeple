@@ -29,4 +29,14 @@ defmodule MeepleWeb.BoardLive.MapTest do
     {:ok, view, _html} = live(conn, "/board")
     assert view |> element("#field-1-2") |> render() =~ "planes.svg"
   end
+
+  test "show clicked field details", %{conn: conn} do
+    {:ok, view, _html} = live(conn, "/board")
+
+    view
+    |> element("#field-1-2")
+    |> render_click()
+
+    assert view |> element("#field-card") |> render() =~ "<h2>Planes</h2>"
+  end
 end
