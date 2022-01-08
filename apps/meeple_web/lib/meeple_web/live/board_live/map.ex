@@ -11,7 +11,11 @@ defmodule MeepleWeb.BoardLive.Map do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(width: Grid.width(assigns.territory), height: Grid.height(assigns.territory))}
+     |> assign(
+       width: Grid.width(assigns.territory),
+       height: Grid.height(assigns.territory),
+       field_detail: nil
+     )}
   end
 
   def render(assigns) do
@@ -32,7 +36,7 @@ defmodule MeepleWeb.BoardLive.Map do
             <.field x={x} y={y} territory={@territory} myself={@myself} />
           <% end %>
         <% end %>
-        <.live_component module={FieldCard} id="field-card" />
+        <.live_component module={FieldCard} id="field-card" field={@field_detail} />
       </div>
       <div class="justify-self-start"><i class="las la-caret-right la-3x"></i></div>
       <div style="grid-column: 1 / span 3"><i class="las la-caret-down la-3x"></i></div>
@@ -49,7 +53,7 @@ defmodule MeepleWeb.BoardLive.Map do
     [x, y] = [String.to_integer(x), String.to_integer(y)]
     field = Territory.discover(x, y)
     new_terriory = Grid.put(socket.assigns.territory, x, y, field)
-    {:noreply, assign(socket, territory: new_terriory)}
+    {:noreply, assign(socket, territory: new_terriory, field_detail: field)}
   end
 
   def field(assigns) do
@@ -75,12 +79,12 @@ defmodule MeepleWeb.BoardLive.Map do
     """
   end
 
-  defp vegetation_image(:high_mountains), do: "high_mountains.svg"
-  defp vegetation_image(:mountains), do: "mountains.svg"
-  defp vegetation_image(:hills), do: "hills.svg"
-  defp vegetation_image(:woods), do: "woods.svg"
-  defp vegetation_image(:planes), do: "planes.svg"
-  defp vegetation_image(:swamps), do: "swamps.svg"
-  defp vegetation_image(:lake), do: "lake.svg"
-  defp vegetation_image(_any), do: "unknown.svg"
+  def vegetation_image(:high_mountains), do: "high_mountains.svg"
+  def vegetation_image(:mountains), do: "mountains.svg"
+  def vegetation_image(:hills), do: "hills.svg"
+  def vegetation_image(:woods), do: "woods.svg"
+  def vegetation_image(:planes), do: "planes.svg"
+  def vegetation_image(:swamps), do: "swamps.svg"
+  def vegetation_image(:lake), do: "lake.svg"
+  def vegetation_image(_any), do: "unknown.svg"
 end
