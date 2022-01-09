@@ -7,7 +7,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   def render(%{field: nil} = assigns) do
     ~H"""
     <div>
-      <.card_border let={nil} innerfield={nil}>
+      <.card_border let={nil} innerfield={nil} x={@x} y={@y}>
         loading ...
       </.card_border>
     </div>
@@ -17,7 +17,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   def render(%{field: f} = assigns) do
     ~H"""
     <div>
-      <.card_border let={field} innerfield={f}>
+      <.card_border let={field} innerfield={f} x={@x} y={@y}>
         <div class="mt-5" style="height: 392px">
           <.card_title title={@field[:building] || @field[:vegetation]} />
           <div class="my-2 mx-auto grid justify-center bg-steelbluex-100">
@@ -58,11 +58,18 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   end
 
   def card_border(assigns) do
+    left =
+      if assigns.x <= 7 do
+        (assigns.x + 1) * 75 + 20
+      else
+        (assigns.x - 4) * 75 - 20
+      end
+
     ~H"""
     <div
       id="field-card"
-      class="bg-gray-50 rounded-lg drop-shadow-lg border border-gray-800 p-4 absolute"
-      style="width: 300px; top: 30px; right: 210px"
+      class="bg-gray-50 rounded-lg drop-shadow-md border border-gray-800 p-4 absolute transition-all duration-500 ease-out"
+      style={"width: 300px; top: 30px; left: #{left}px"}
       x-show="showFieldCard" x-cloak
       x-transition:leave="transition ease-in duration-200"
       x-transition:leave-start="opacity-100 scale-100"

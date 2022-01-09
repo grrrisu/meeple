@@ -16,7 +16,9 @@ defmodule MeepleWeb.BoardLive.Map do
      |> assign(
        width: Grid.width(assigns.territory),
        height: Grid.height(assigns.territory),
-       field_detail: nil
+       field_detail: nil,
+       detail_x: 0,
+       detail_y: 0
      )}
   end
 
@@ -38,7 +40,7 @@ defmodule MeepleWeb.BoardLive.Map do
             <.field x={x} y={y} territory={@territory} myself={@myself} />
           <% end %>
         <% end %>
-        <.live_component module={FieldCard} id="field-card" field={@field_detail} />
+        <.live_component module={FieldCard} id="field-card" field={@field_detail} x={@detail_x} y={@detail_y}/>
       </div>
       <div class="justify-self-start"><i class="las la-caret-right la-3x"></i></div>
       <div style="grid-column: 1 / span 3"><i class="las la-caret-down la-3x"></i></div>
@@ -54,7 +56,9 @@ defmodule MeepleWeb.BoardLive.Map do
     Logger.debug("discover [#{x}, #{y}]")
     field = Territory.discover(x, y)
     new_terriory = Grid.put(socket.assigns.territory, x, y, field)
-    {:noreply, assign(socket, territory: new_terriory, field_detail: field)}
+
+    {:noreply,
+     assign(socket, territory: new_terriory, field_detail: field, detail_x: x, detail_y: y)}
   end
 
   def fade_in(x, y, target) do
