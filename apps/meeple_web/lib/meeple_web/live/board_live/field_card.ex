@@ -54,9 +54,12 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     <div
       id="field-card"
       class="bg-gray-50 rounded-lg drop-shadow-lg border border-gray-800 p-4 absolute"
-      x-show="showFieldCard" x-cloak x-transistion.duration.500ms
-      style="width: 300px; top: 30px; right: 210px">
-      <div class="border border-gray-800">
+      style="width: 300px; top: 30px; right: 210px"
+      x-show="showFieldCard" x-cloak
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100 scale-100"
+      x-transition:leave-end="opacity-0 scale-75">
+      <div class="border border-gray-800" style="height: 448px">
         <%= render_slot(@inner_block, @innerfield) %>
         <div @click="showFieldCard = false" class="text-center">close</div>
       </div>
