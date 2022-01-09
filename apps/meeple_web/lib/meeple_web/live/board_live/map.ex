@@ -2,6 +2,8 @@ defmodule MeepleWeb.BoardLive.Map do
   use MeepleWeb, :live_component
   require Logger
 
+  alias Phoenix.LiveView.JS
+
   alias Sim.Grid
   alias Meeple.Territory
 
@@ -50,10 +52,17 @@ defmodule MeepleWeb.BoardLive.Map do
 
   def handle_event("discover", %{"x" => x, "y" => y}, socket) do
     Logger.debug("discover [#{x}, #{y}]")
-    [x, y] = [String.to_integer(x), String.to_integer(y)]
     field = Territory.discover(x, y)
     new_terriory = Grid.put(socket.assigns.territory, x, y, field)
     {:noreply, assign(socket, territory: new_terriory, field_detail: field)}
+  end
+
+  def fade_in(x, y, target) do
+    JS.push("discover", value: %{x: x, y: y}, target: target)
+    |> JS.show(
+      transition: {"ease-out duration-500", "opacity-25", "opacity-100"},
+      to: "#field-card"
+    )
   end
 
   def field(assigns) do
@@ -66,7 +75,7 @@ defmodule MeepleWeb.BoardLive.Map do
       id={"field-#{assigns.x}-#{assigns.y}"}
       class="field text-[0.5rem]"
       @click="showFieldCard = true"
-      phx-click="discover" phx-value-x={assigns.x} phx-value-y={assigns.y} phx-target={@myself}
+      phx-click={fade_in(@x, @y, @myself)}
       title={"v: #{f[:vegetation]}\nf: #{flora}\na: #{fauna}"}>
       <%= cond do %>
         <% f[:building] -> %>
