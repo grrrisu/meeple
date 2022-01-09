@@ -65,7 +65,7 @@ defmodule MeepleWeb.BoardLive.Map do
     <div
       id={"field-#{assigns.x}-#{assigns.y}"}
       class="field text-[0.5rem]"
-      @click="showFieldCard = !showFieldCard"
+      @click="showFieldCard = true"
       phx-click="discover" phx-value-x={assigns.x} phx-value-y={assigns.y} phx-target={@myself}
       title={"v: #{f[:vegetation]}\nf: #{flora}\na: #{fauna}"}>
       <%= cond do %>
