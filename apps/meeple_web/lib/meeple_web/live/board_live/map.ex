@@ -76,7 +76,7 @@ defmodule MeepleWeb.BoardLive.Map do
 
     ~H"""
     <div
-      id={"field-#{assigns.x}-#{assigns.y}"}
+      id={"field-#{@x}-#{@y}"}
       class="field text-[0.5rem]"
       @click="showFieldCard = true"
       phx-click={fade_in(@x, @y, @myself)}

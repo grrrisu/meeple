@@ -19,6 +19,8 @@ defmodule MeepleWeb.BoardLive.MapTest do
     assert view |> element("#field-1-1") |> render() =~ "homebase.svg"
   end
 
+  # skip until https://github.com/phoenixframework/phoenix_live_view/issues/1824 is relsolved
+  @tag :skip
   test "discover", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/board")
 
@@ -30,6 +32,8 @@ defmodule MeepleWeb.BoardLive.MapTest do
     assert view |> element("#field-1-2") |> render() =~ "planes.svg"
   end
 
+  # skip until https://github.com/phoenixframework/phoenix_live_view/issues/1824 is relsolved
+  @tag :skip
   test "show clicked field details", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/board")
 
