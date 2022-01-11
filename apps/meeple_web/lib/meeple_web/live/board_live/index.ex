@@ -1,6 +1,8 @@
 defmodule MeepleWeb.BoardLive.Index do
   use MeepleWeb, :live_view
 
+  require Logger
+
   alias Meeple.Territory
   alias MeepleWeb.BoardLive.{Map, Pawns, Location}
 
@@ -37,6 +39,7 @@ defmodule MeepleWeb.BoardLive.Index do
     <div class="board">
       <div class="board-header">
         <h1>The Board</h1>
+        <.admin_view_switch />
       </div>
       <div class="board-menu">
         <a href="/">&lt; Back</a>
@@ -49,6 +52,24 @@ defmodule MeepleWeb.BoardLive.Index do
       <.live_component module={Location} id="location" />
     </div>
     """
+  end
+
+  def admin_view_switch(assigns) do
+    ~H"""
+    <form phx-change="toggle-admin-view">
+      <.slider_checkbox />
+    </form>
+    """
+  end
+
+  def handle_event("toggle-admin-view", %{"slider-value" => value}, socket) do
+    Logger.info("slider value: #{value}")
+    {:noreply, socket}
+  end
+
+  def handle_event("toggle-admin-view", _no_value, socket) do
+    Logger.info("slider value: OFF!")
+    {:noreply, socket}
   end
 
   defp load_territory() do
