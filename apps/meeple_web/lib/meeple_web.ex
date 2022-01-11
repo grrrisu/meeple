@@ -47,6 +47,7 @@ defmodule MeepleWeb do
       use Phoenix.LiveView,
         layout: {MeepleWeb.LayoutView, "live.html"}
 
+      import ThundermoonWeb.LiveHelpers
       unquote(view_helpers())
     end
   end
