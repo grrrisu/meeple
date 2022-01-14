@@ -7,8 +7,8 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   def render(%{field: nil} = assigns) do
     ~H"""
     <div>
-      <.card_border let={nil} innerfield={nil} x={@x} y={@y}>
-        loading ...
+      <.card_border x={@x} y={@y}>
+        <div>...loading</div>
       </.card_border>
     </div>
     """
