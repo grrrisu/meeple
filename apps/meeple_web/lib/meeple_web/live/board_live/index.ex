@@ -7,16 +7,17 @@ defmodule MeepleWeb.BoardLive.Index do
   alias MeepleWeb.BoardLive.{Map, Pawns, Location}
 
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign(territory: load_territory())}
+    {:ok, socket}
   end
 
   def handle_params(params, session, socket) do
+    socket = assign(socket, fog_of_war: true, map_dimensions: map_dimensions())
     {:noreply, handle_action(socket.assigns.live_action, params, session, socket)}
   end
 
   def handle_action(:index, _params, _session, socket) do
-    case socket.assigns.territory do
-      nil ->
+    case map_exists?() do
+      false ->
         socket
         |> put_flash(:error, "no board created or loaded")
         |> redirect(to: "/")
@@ -39,14 +40,14 @@ defmodule MeepleWeb.BoardLive.Index do
     <div class="board">
       <div class="board-header">
         <h1>The Board</h1>
-        <.admin_view_switch />
+        <.admin_view_switch fog_of_war={@fog_of_war} />
       </div>
       <div class="board-menu">
         <a href="/">&lt; Back</a>
       </div>
       <div class="board-map border-8 border-gray-900">
         <div>Sunny</div>
-        <.live_component module={Map} id="map" territory={@territory}/>
+        <.live_component module={Map} id="map" dimensions={@map_dimensions}/>
       </div>
       <.live_component module={Pawns} id="pawns" />
       <.live_component module={Location} id="location" />
@@ -57,23 +58,27 @@ defmodule MeepleWeb.BoardLive.Index do
   def admin_view_switch(assigns) do
     ~H"""
     <form phx-change="toggle-admin-view">
-      <.slider_checkbox />
+      <.slider_checkbox label="Fog of War" checked={@fog_of_war} />
     </form>
     """
   end
 
-  def handle_event("toggle-admin-view", %{"slider-value" => value}, socket) do
-    Logger.info("slider value: #{value}")
-    {:noreply, socket}
+  def handle_event("toggle-admin-view", %{"slider-value" => "on"}, socket) do
+    Logger.info("slider value: on")
+    {:noreply, assign(socket, fog_of_war: true)}
   end
 
-  def handle_event("toggle-admin-view", _no_value, socket) do
+  def handle_event("toggle-admin-view", _slider_off, socket) do
     Logger.info("slider value: OFF!")
-    {:noreply, socket}
+    {:noreply, assign(socket, fog_of_war: false)}
   end
 
-  defp load_territory() do
-    Territory.get()
+  defp map_exists?() do
+    Territory.exists?()
+  end
+
+  defp map_dimensions() do
+    Territory.dimensions()
   end
 
   defp create_territory(name) do

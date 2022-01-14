@@ -4,18 +4,20 @@ defmodule MeepleWeb.BoardLive.Map do
 
   alias Phoenix.LiveView.JS
 
-  alias Sim.Grid
   alias Meeple.Territory
 
   alias MeepleWeb.BoardLive.FieldCard
 
   def update(assigns, socket) do
+    {width, height} = assigns.dimensions
+
     {:ok,
      socket
      |> assign(assigns)
      |> assign(
-       width: Grid.width(assigns.territory),
-       height: Grid.height(assigns.territory),
+       map_version: 0,
+       width: width,
+       height: height,
        field_detail: nil,
        detail_x: 0,
        detail_y: 0
@@ -37,7 +39,7 @@ defmodule MeepleWeb.BoardLive.Map do
         style={css_grid_template(@width, @height)}>
         <%= for y <- (@height - 1)..0 do %>
           <%= for x <- 0..(@width - 1) do %>
-            <.field x={x} y={y} territory={@territory} myself={@myself} />
+            <.field x={x} y={y} map_version={@map_version} myself={@myself} />
           <% end %>
         <% end %>
         <.live_component module={FieldCard} id="field-card" field={@field_detail} x={@detail_x} y={@detail_y}/>
@@ -55,10 +57,14 @@ defmodule MeepleWeb.BoardLive.Map do
   def handle_event("discover", %{"x" => x, "y" => y}, socket) do
     Logger.debug("discover [#{x}, #{y}]")
     field = Territory.discover(x, y)
-    new_terriory = Grid.put(socket.assigns.territory, x, y, field)
 
     {:noreply,
-     assign(socket, territory: new_terriory, field_detail: field, detail_x: x, detail_y: y)}
+     assign(socket,
+       map_version: socket.assigns.map_version + 1,
+       field_detail: field,
+       detail_x: x,
+       detail_y: y
+     )}
   end
 
   def fade_in(x, y, target) do
@@ -70,7 +76,7 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def field(assigns) do
-    f = Grid.get(assigns.territory, assigns.x, assigns.y)
+    f = Territory.field(assigns.x, assigns.y)
     flora = f[:flora] && Enum.join(f[:flora], ": ")
     fauna = (f[:herbivore] || f[:predator] || []) |> Enum.join(": ")
 

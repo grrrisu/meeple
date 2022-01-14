@@ -17,6 +17,16 @@ defmodule Meeple.Territory do
     Agent.get(pid, &get_grid/1)
   end
 
+  def field(x, y, pid \\ __MODULE__) do
+    Agent.get(pid, fn %{fog_of_war: fog, ground: ground} ->
+      get_field(ground, Grid.get(fog, x, y), x, y)
+    end)
+  end
+
+  def dimensions(pid \\ __MODULE__) do
+    Agent.get(pid, &get_dimensions/1)
+  end
+
   def create(name, pid \\ __MODULE__) do
     Agent.get_and_update(pid, fn _ ->
       state = create_grid(name)
@@ -42,6 +52,14 @@ defmodule Meeple.Territory do
       field = get_field(state.ground, 5, x, y)
       {field, %{state | fog_of_war: new_fog}}
     end)
+  end
+
+  def get_dimensions(nil) do
+    {0, 0}
+  end
+
+  def get_dimensions(%{fog_of_war: fog}) do
+    {Grid.width(fog), Grid.height(fog)}
   end
 
   defp create_grid("test"), do: create_grid(TestTerritory, 3, 4)
