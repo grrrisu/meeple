@@ -4,7 +4,7 @@ defmodule MeepleWeb.BoardLive.Map do
 
   alias Phoenix.LiveView.JS
 
-  alias Meeple.Territory
+  alias Meeple.{FogOfWar, Territory}
 
   alias MeepleWeb.BoardLive.FieldCard
 
@@ -24,6 +24,12 @@ defmodule MeepleWeb.BoardLive.Map do
      )}
   end
 
+  def set_field_detail(%{assigns: %{field_detail: nil}} = socket), do: socket
+
+  def set_field_detail(%{assigns: %{detail_x: x, detail_y: y, fog_of_war: fog_of_war}} = socket) do
+    assign(socket, field_detail: get_field(x, y, fog_of_war))
+  end
+
   def render(assigns) do
     # for now we a use the container width lx of 1280px
     # https://tailwindcss.com/docs/container
@@ -39,7 +45,7 @@ defmodule MeepleWeb.BoardLive.Map do
         style={css_grid_template(@width, @height)}>
         <%= for y <- (@height - 1)..0 do %>
           <%= for x <- 0..(@width - 1) do %>
-            <.field x={x} y={y} map_version={@map_version} myself={@myself} />
+            <.field x={x} y={y} map_version={@map_version} myself={@myself} fog_of_war={@fog_of_war} />
           <% end %>
         <% end %>
         <.live_component module={FieldCard} id="field-card" field={@field_detail} x={@detail_x} y={@detail_y}/>
@@ -54,13 +60,25 @@ defmodule MeepleWeb.BoardLive.Map do
     "grid-template-columns: repeat(#{width}, 75px); grid-template-rows: repeat(#{height}, 75px)"
   end
 
-  def handle_event("discover", %{"x" => x, "y" => y}, socket) do
+  def handle_event("discover", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: true}} = socket) do
     Logger.debug("discover [#{x}, #{y}]")
-    field = Territory.discover(x, y)
+    field = FogOfWar.discover(x, y)
 
     {:noreply,
      assign(socket,
        map_version: socket.assigns.map_version + 1,
+       field_detail: field,
+       detail_x: x,
+       detail_y: y
+     )}
+  end
+
+  def handle_event("discover", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: false}} = socket) do
+    Logger.debug("discover [#{x}, #{y}]")
+    field = Territory.field(x, y)
+
+    {:noreply,
+     assign(socket,
        field_detail: field,
        detail_x: x,
        detail_y: y
@@ -76,7 +94,7 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def field(assigns) do
-    f = Territory.field(assigns.x, assigns.y)
+    f = get_field(assigns.x, assigns.y, assigns.fog_of_war)
     flora = f[:flora] && Enum.join(f[:flora], ": ")
     fauna = (f[:herbivore] || f[:predator] || []) |> Enum.join(": ")
 
@@ -97,6 +115,9 @@ defmodule MeepleWeb.BoardLive.Map do
     </div>
     """
   end
+
+  defp get_field(x, y, true), do: FogOfWar.field(x, y)
+  defp get_field(x, y, false), do: Territory.field(x, y)
 
   def vegetation_image(:high_mountains), do: "high_mountains.svg"
   def vegetation_image(:mountains), do: "mountains.svg"

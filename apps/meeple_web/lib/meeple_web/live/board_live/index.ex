@@ -3,8 +3,8 @@ defmodule MeepleWeb.BoardLive.Index do
 
   require Logger
 
-  alias Meeple.Territory
-  alias MeepleWeb.BoardLive.{Map, Pawns, Location}
+  alias Meeple.{FogOfWar, Territory}
+  alias MeepleWeb.BoardLive.{Map, FieldCard, Pawns, Location}
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -47,7 +47,7 @@ defmodule MeepleWeb.BoardLive.Index do
       </div>
       <div class="board-map border-8 border-gray-900">
         <div>Sunny</div>
-        <.live_component module={Map} id="map" dimensions={@map_dimensions}/>
+        <.live_component module={Map} id="map" dimensions={@map_dimensions} fog_of_war={@fog_of_war} />
       </div>
       <.live_component module={Pawns} id="pawns" />
       <.live_component module={Location} id="location" />
@@ -82,6 +82,7 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   defp create_territory(name) do
-    Territory.create(name)
+    :ok = FogOfWar.create(name)
+    :ok = Territory.create(name)
   end
 end
