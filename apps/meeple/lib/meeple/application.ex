@@ -10,7 +10,7 @@ defmodule Meeple.Application do
     children = [
       Meeple.Repo,
       {Phoenix.PubSub, name: Meeple.PubSub},
-      Meeple.Territory
+      Meeple.BoardSupervisor
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Meeple.Supervisor)

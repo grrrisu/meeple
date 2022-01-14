@@ -14,34 +14,34 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     """
   end
 
-  def render(%{field: f} = assigns) do
+  def render(assigns) do
     ~H"""
     <div>
-      <.card_border let={field} innerfield={f} x={@x} y={@y}>
+      <.card_border x={@x} y={@y}>
         <div class="mt-5" style="height: 392px">
           <.card_title title={@field[:building] || @field[:vegetation]} />
           <div class="my-2 mx-auto grid justify-center bg-steelbluex-100">
             <image
-              src={"/images/fields/#{(field[:building] && "homebase.svg") || Map.vegetation_image(field[:vegetation])}"}
+              src={"/images/fields/#{(@field[:building] && "homebase.svg") || Map.vegetation_image(@field[:vegetation])}"}
               class="border border-steelblue-800"
               style="height: 240px"/>
           </div>
           <div class="px-3 text-sm">
             <p class="italic">
-              Description: <%= field[:vegetation] %>
+              Description: <%= @field[:vegetation] %>
             </p>
             <p>
-              <%= if field[:flora] do %>
-                Flora: <%= field[:flora] |> inspect() %><br/>
+              <%= if @field[:flora] do %>
+                Flora: <%= @field[:flora] |> inspect() %><br/>
               <% end %>
-              <%= if field[:herbivore] do %>
-                Herbivores: <%= field[:herbivore] |> inspect() %><br/>
+              <%= if @field[:herbivore] do %>
+                Herbivores: <%= @field[:herbivore] |> inspect() %><br/>
               <% end %>
-              <%= if field[:predator] do %>
-                Predators: <%= field[:predator] |> inspect() %><br/>
+              <%= if @field[:predator] do %>
+                Predators: <%= @field[:predator] |> inspect() %><br/>
               <% end %>
-              <%= if field[:danger] do %>
-                Danger: <%= field[:danger] |> inspect() %><br/>
+              <%= if @field[:danger] do %>
+                Danger: <%= @field[:danger] |> inspect() %><br/>
               <% end %>
             </p>
             <div>
@@ -75,7 +75,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
       x-transition:leave-start="opacity-100 scale-100"
       x-transition:leave-end="opacity-0 scale-75">
       <div class="border border-gray-800" style="height: 448px">
-        <%= render_slot(@inner_block, @innerfield) %>
+        <%= render_slot(@inner_block) %>
         <.card_close_button text="close" />
       </div>
     </div>
