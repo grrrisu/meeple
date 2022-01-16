@@ -6,7 +6,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
 
   def render(%{field: nil} = assigns) do
     ~H"""
-    <div>
+    <div id="field-card">
       <.card_border x={@x} y={@y}>
         <div>...loading</div>
       </.card_border>
@@ -16,7 +16,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div id="field-card">
       <.card_border x={@x} y={@y}>
         <div class="mt-5" style="height: 392px">
           <.card_title title={@field[:building] || @field[:vegetation]} />
@@ -67,7 +67,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
 
     ~H"""
     <div
-      id="field-card"
+      id="field-card-border"
       class="bg-gray-50 rounded-lg drop-shadow-md border border-gray-800 p-4 absolute transition-all duration-500 ease-out"
       style={"width: 300px; top: 30px; left: #{left}px"}
       x-show="showFieldCard" x-cloak
