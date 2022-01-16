@@ -31,6 +31,8 @@ defmodule Sim.Grid do
     end)
   end
 
+  def get(nil, _x, _y), do: {:error, "grid is nil"}
+
   def get(%{0 => columns} = grid, x, y)
       when x >= 0 and x < map_size(grid) and y >= 0 and y < map_size(columns) do
     get_in(grid, [x, y])
