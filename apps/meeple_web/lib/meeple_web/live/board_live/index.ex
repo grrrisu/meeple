@@ -57,9 +57,13 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def admin_view_switch(assigns) do
     ~H"""
-    <form phx-change="toggle-admin-view">
-      <.slider_checkbox label="Fog of War" checked={@fog_of_war} />
-    </form>
+    <div class="grid justify-items-end">
+      <div style="width: 160px">
+        <form phx-change="toggle-admin-view">
+          <.slider_checkbox label="Fog of War" checked={@fog_of_war} />
+        </form>
+      </div>
+    </div>
     """
   end
 
