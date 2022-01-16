@@ -45,7 +45,7 @@ defmodule MeepleWeb.BoardLive.Map do
         style={css_grid_template(@width, @height)}>
         <%= for y <- (@height - 1)..0 do %>
           <%= for x <- 0..(@width - 1) do %>
-            <.field x={x} y={y} map_version={@map_version} myself={@myself} fog_of_war={@fog_of_war} />
+            <.field id={"field-#{x}-#{y}"} x={x} y={y} map_version={@map_version} myself={@myself} fog_of_war={@fog_of_war} />
           <% end %>
         <% end %>
         <.live_component module={FieldCard} id="field-card" field={@field_detail} x={@detail_x} y={@detail_y}/>
@@ -95,8 +95,12 @@ defmodule MeepleWeb.BoardLive.Map do
 
   def field(assigns) do
     f = get_field(assigns.x, assigns.y, assigns.fog_of_war)
-    flora = f[:flora] && Enum.join(f[:flora], ": ")
-    fauna = (f[:herbivore] || f[:predator] || []) |> Enum.join(": ")
+
+    assigns =
+      assigns
+      |> assign(vegetation: f[:vegetation])
+      |> assign(flora: f[:flora] && Enum.join(f[:flora], ": "))
+      |> assign(fauna: (f[:herbivore] || f[:predator] || []) |> Enum.join(": "))
 
     ~H"""
     <div
@@ -104,12 +108,12 @@ defmodule MeepleWeb.BoardLive.Map do
       class="field text-[0.5rem]"
       @click="showFieldCard = true"
       phx-click={fade_in(@x, @y, @myself)}
-      title={"v: #{f[:vegetation]}\nf: #{flora}\na: #{fauna}"}>
+      title={"v: #{@vegetation}\nf: #{@flora}\na: #{@fauna}"}>
       <%= cond do %>
         <% f[:building] -> %>
           <image src="/images/fields/homebase.svg" class="w-full"/>
         <% f[:vegetation] -> %>
-          <image src={"/images/fields/#{vegetation_image(f[:vegetation])}"} class="w-full"/>
+          <image src={"/images/fields/#{vegetation_image(@vegetation)}"} class="w-full"/>
         <% true -> %>
       <% end %>
     </div>

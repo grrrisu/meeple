@@ -24,6 +24,9 @@ Alpine.start();
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
+
+import Hooks from "./hooks.js";
+
 let liveSocket = new LiveSocket("/live", Socket, {
   dom: {
     onBeforeElUpdated(from, to) {
@@ -32,6 +35,7 @@ let liveSocket = new LiveSocket("/live", Socket, {
       }
     },
   },
+  hooks: Hooks,
   params: { _csrf_token: csrfToken },
 });
 
@@ -49,3 +53,4 @@ liveSocket.connect();
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
+liveSocket.enableDebug();

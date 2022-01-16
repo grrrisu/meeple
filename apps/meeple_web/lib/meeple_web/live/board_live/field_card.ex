@@ -57,12 +57,12 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     """
   end
 
-  def card_border(assigns) do
+  def card_border(%{x: x} = assigns) do
     left =
-      if assigns.x <= 7 do
-        (assigns.x + 1) * 75 + 20
+      if x <= 7 do
+        (x + 1) * 75 + 20
       else
-        (assigns.x - 4) * 75 - 20
+        (x - 4) * 75 - 20
       end
 
     ~H"""
@@ -71,9 +71,11 @@ defmodule MeepleWeb.BoardLive.FieldCard do
       class="bg-gray-50 rounded-lg drop-shadow-md border border-gray-800 p-4 absolute transition-all duration-500 ease-out"
       style={"width: 300px; top: 30px; left: #{left}px"}
       x-show="showFieldCard" x-cloak
+      @close="showFieldCard = false"
       x-transition:leave="transition ease-in duration-200"
       x-transition:leave-start="opacity-100 scale-100"
-      x-transition:leave-end="opacity-0 scale-75">
+      x-transition:leave-end="opacity-0 scale-75"
+      phx-hook="FieldCard">
       <div class="border border-gray-800" style="height: 448px">
         <%= render_slot(@inner_block) %>
         <.card_close_button text="close" />
