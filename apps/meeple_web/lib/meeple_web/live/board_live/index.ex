@@ -65,12 +65,16 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_event("toggle-admin-view", %{"slider-value" => "on"}, socket) do
     Logger.info("slider value: on")
-    {:noreply, assign(socket, fog_of_war: true)}
+
+    {:noreply,
+     socket |> push_event("map_changed", %{fog_of_war: true}) |> assign(fog_of_war: true)}
   end
 
   def handle_event("toggle-admin-view", _slider_off, socket) do
     Logger.info("slider value: OFF!")
-    {:noreply, assign(socket, fog_of_war: false)}
+
+    {:noreply,
+     socket |> push_event("map_changed", %{fog_of_war: false}) |> assign(fog_of_war: false)}
   end
 
   defp map_exists?() do
