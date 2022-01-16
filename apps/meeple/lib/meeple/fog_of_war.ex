@@ -7,6 +7,10 @@ defmodule Meeple.FogOfWar do
   alias Meeple.Territory.One
   alias Meeple.Territory.Test, as: TestTerritory
 
+  @full_visability 5
+  @only_vegetation 1
+  @terra_incognita 0
+
   def start_link(args \\ []) do
     Agent.start_link(
       fn -> %{territory: args[:territory] || Territory, grid: nil} end,
@@ -30,8 +34,8 @@ defmodule Meeple.FogOfWar do
 
   def discover(x, y, pid \\ __MODULE__) do
     Agent.get_and_update(pid, fn %{territory: territory, grid: grid} = state ->
-      new_fog = Grid.put(grid, x, y, 5)
-      field = get_field(x, y, 5, territory)
+      new_fog = Grid.put(grid, x, y, @full_visability)
+      field = get_field(x, y, @full_visability, territory)
       {field, %{state | grid: new_fog}}
     end)
   end
@@ -45,9 +49,9 @@ defmodule Meeple.FogOfWar do
 
   defp get_field(x, y, visability, territory) do
     case visability do
-      5 -> Territory.field(x, y, territory)
-      1 -> %{vegetation: Territory.field(x, y, territory) |> Map.get(:vegetation)}
-      0 -> %{}
+      @full_visability -> Territory.field(x, y, territory)
+      @only_vegetation -> %{vegetation: Territory.field(x, y, territory) |> Map.get(:vegetation)}
+      @terra_incognita -> %{}
     end
   end
 end
