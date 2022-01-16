@@ -2,11 +2,11 @@ defmodule MeepleWeb.BoardLive.MapTest do
   use MeepleWeb.ConnCase
   import Phoenix.LiveViewTest
 
-  alias Meeple.Territory
+  alias Meeple.{FogOfWar, Territory}
 
   setup do
-    Territory.create("test")
-    :ok
+    :ok = FogOfWar.create("test")
+    :ok = Territory.create("test")
   end
 
   test "setup board", %{conn: conn} do
@@ -38,5 +38,19 @@ defmodule MeepleWeb.BoardLive.MapTest do
     |> render_click()
 
     assert view |> element("#field-card") |> render() =~ "Planes</h2>"
+  end
+
+  test "toggle fog of war", %{conn: conn} do
+    {:ok, view, _html} = live(conn, "/board")
+    refute view |> element("#field-0-3") |> render() =~ "planes.svg"
+
+    view
+    |> element("#form-admin-view")
+    |> render_change(%{}) =~ "foobar"
+
+    assert view |> element("#field-0-3") |> render() =~ "planes.svg"
+
+    view |> element("#form-admin-view") |> render_change(%{"slider-value" => "on"})
+    refute view |> element("#field-0-3") |> render() =~ "planes.svg"
   end
 end

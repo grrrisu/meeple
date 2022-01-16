@@ -59,7 +59,7 @@ defmodule MeepleWeb.BoardLive.Index do
     ~H"""
     <div class="grid justify-items-end">
       <div style="width: 160px">
-        <form phx-change="toggle-admin-view">
+        <form id="form-admin-view" phx-change="toggle-admin-view">
           <.slider_checkbox label="Fog of War" checked={@fog_of_war} />
         </form>
       </div>
