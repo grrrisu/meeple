@@ -2,7 +2,6 @@ defmodule Meeple.FogOfWarTest do
   use ExUnit.Case, async: true
 
   alias Meeple.{FogOfWar, Territory}
-  alias Sim.Grid
 
   setup do
     territory_pid = start_supervised!({Territory, name: :fog_of_war_test_territory})
