@@ -2,7 +2,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   use MeepleWeb, :live_component
   require Logger
 
-  alias MeepleWeb.BoardLive.Map
+  alias MeepleWeb.BoardLive.Map, as: BoardMap
 
   def render(%{field: nil} = assigns) do
     ~H"""
@@ -19,10 +19,10 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     <div id="field-card">
       <.card_border x={@x} y={@y}>
         <div class="mt-5" style="height: 392px">
-          <.card_title title={@field[:building] || @field[:vegetation]} />
+          <.card_title title={@field[:building] || @field[:vegetation] || :"Terra Incognita"} />
           <div class="my-2 mx-auto grid justify-center bg-steelbluex-100">
             <image
-              src={"/images/fields/#{(@field[:building] && "homebase.svg") || Map.vegetation_image(@field[:vegetation])}"}
+              src={"/images/fields/#{(@field[:building] && "homebase.svg") || BoardMap.vegetation_image(@field[:vegetation])}"}
               class="border border-steelblue-800"
               style="height: 240px"/>
           </div>
@@ -44,12 +44,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
                 Danger: <%= @field[:danger] |> inspect() %><br/>
               <% end %>
             </p>
-            <div>
-              Actions available ....<br/>
-              Option 1 <br/>
-              Option 2 <br/>
-              Option 3 <br/>
-            </div>
+            <.action_list field={@field} x={@x} y={@y} />
           </div>
         </div>
       </.card_border>
@@ -99,13 +94,48 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   end
 
   def card_close_button(assigns) do
+    click_event = (Map.get(assigns, :click) && assigns.click) || []
+
     ~H"""
     <div class="grid justify-center">
       <div class="text-center text-steelblue-800 pt-0.5"
         style="width: 159px; height: 30px; top: 13px; right: 10px; background-image: url('/images/ui/button.svg'); background-size: 159px 30px"
+        {click_event}
         @click="showFieldCard = false">
         <%= @text %>
       </div>
+    </div>
+    """
+  end
+
+  def action_list(%{field: %{vegetation: _vegetation}} = assigns) do
+    ~H"""
+    <div>
+      Actions available ....<br/>
+      Option 1 <br/>
+      Option 2 <br/>
+      Option 3 <br/>
+    </div>
+    """
+  end
+
+  def action_list(assigns) do
+    path_costs = abs(7 - assigns.x) + abs(1 - assigns.y)
+
+    click = [
+      "phx-click": "discover",
+      "phx-target": "#map",
+      "phx-value-x": assigns.x,
+      "phx-value-y": assigns.y
+    ]
+
+    ~H"""
+    <div>
+      <p>
+      Path costs: <%= path_costs %>
+      </p>
+      Actions available:<br/>
+      <.card_close_button text="Discover (4AP)" click={click} />
     </div>
     """
   end
