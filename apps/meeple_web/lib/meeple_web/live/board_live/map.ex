@@ -60,6 +60,31 @@ defmodule MeepleWeb.BoardLive.Map do
     "grid-template-columns: repeat(#{width}, 75px); grid-template-rows: repeat(#{height}, 75px)"
   end
 
+  def handle_event("show", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: true}} = socket) do
+    Logger.debug("discover [#{x}, #{y}]")
+    field = FogOfWar.field(x, y)
+
+    {:noreply,
+     assign(socket,
+       map_version: socket.assigns.map_version + 1,
+       field_detail: field,
+       detail_x: x,
+       detail_y: y
+     )}
+  end
+
+  def handle_event("show", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: false}} = socket) do
+    Logger.debug("discover [#{x}, #{y}]")
+    field = Territory.field(x, y)
+
+    {:noreply,
+     assign(socket,
+       field_detail: field,
+       detail_x: x,
+       detail_y: y
+     )}
+  end
+
   def handle_event("discover", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: true}} = socket) do
     Logger.debug("discover [#{x}, #{y}]")
     field = FogOfWar.discover(x, y)
@@ -86,7 +111,7 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def fade_in(x, y, target) do
-    JS.push("discover", value: %{x: x, y: y}, target: target)
+    JS.push("show", value: %{x: x, y: y}, target: target)
     |> JS.show(
       transition: {"ease-out duration-500", "opacity-25", "opacity-100"},
       to: "#field-card"
