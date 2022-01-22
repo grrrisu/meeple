@@ -61,7 +61,7 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def handle_event("show", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: true}} = socket) do
-    Logger.debug("discover [#{x}, #{y}]")
+    Logger.debug("show [#{x}, #{y}]")
     field = FogOfWar.field(x, y)
 
     {:noreply,
@@ -74,7 +74,7 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def handle_event("show", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: false}} = socket) do
-    Logger.debug("discover [#{x}, #{y}]")
+    Logger.debug("show [#{x}, #{y}]")
     field = Territory.field(x, y)
 
     {:noreply,
@@ -87,6 +87,7 @@ defmodule MeepleWeb.BoardLive.Map do
 
   def handle_event("discover", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: true}} = socket) do
     Logger.debug("discover [#{x}, #{y}]")
+    {x, y} = {String.to_integer(x), String.to_integer(y)}
     field = FogOfWar.discover(x, y)
 
     {:noreply,
