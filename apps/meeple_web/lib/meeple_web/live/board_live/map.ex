@@ -85,32 +85,6 @@ defmodule MeepleWeb.BoardLive.Map do
      )}
   end
 
-  def handle_event("discover", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: true}} = socket) do
-    Logger.debug("discover [#{x}, #{y}]")
-    {x, y} = {String.to_integer(x), String.to_integer(y)}
-    field = FogOfWar.discover(x, y)
-
-    {:noreply,
-     assign(socket,
-       map_version: socket.assigns.map_version + 1,
-       field_detail: field,
-       detail_x: x,
-       detail_y: y
-     )}
-  end
-
-  def handle_event("discover", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: false}} = socket) do
-    Logger.debug("discover [#{x}, #{y}]")
-    field = Territory.field(x, y)
-
-    {:noreply,
-     assign(socket,
-       field_detail: field,
-       detail_x: x,
-       detail_y: y
-     )}
-  end
-
   def fade_in(x, y, target) do
     JS.push("show", value: %{x: x, y: y}, target: target)
     |> JS.show(

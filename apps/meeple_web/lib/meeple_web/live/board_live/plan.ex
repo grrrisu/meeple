@@ -1,14 +1,28 @@
 defmodule MeepleWeb.BoardLive.Plan do
   use MeepleWeb, :live_component
 
+  alias Meeple.Plan
+
+  def update(assigns, socket) do
+    {:ok,
+     socket
+     |> assign(assigns)
+     |> assign(plan: Plan.get())}
+  end
+
   def render(assigns) do
     ~H"""
     <div id="plan" class="board-pawns">
-      <div class="border h-20 w-20">Step 1</div>
-      <div class="border h-20 w-20">Step 2</div>
-      <div class="border h-20 w-20">Step 3</div>
-      <div class="border h-20 w-20">Step 4</div>
+      <%= for action <- @plan.actions do %>
+        <div class="border"><%= inspect(action) %></div>
+      <% end %>
+      <div class="border" phx-click="run" phx-target={@myself}>run</div>
     </div>
     """
+  end
+
+  def handle_event("run", _params, socket) do
+    Plan.tick()
+    {:noreply, assign(socket, plan: Plan.get())}
   end
 end

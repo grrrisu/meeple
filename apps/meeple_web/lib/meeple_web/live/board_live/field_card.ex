@@ -2,6 +2,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   use MeepleWeb, :live_component
   require Logger
 
+  alias Meeple.Plan
   alias MeepleWeb.BoardLive.Map, as: BoardMap
 
   def render(%{field: nil} = assigns) do
@@ -44,7 +45,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
                 Danger: <%= @field[:danger] |> inspect() %><br/>
               <% end %>
             </p>
-            <.action_list field={@field} x={@x} y={@y} />
+            <.action_list field={@field} x={@x} y={@y} target={@myself} />
           </div>
         </div>
       </.card_border>
@@ -124,7 +125,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
 
     click = [
       "phx-click": "discover",
-      "phx-target": "#map",
+      "phx-target": assigns.target,
       "phx-value-x": assigns.x,
       "phx-value-y": assigns.y
     ]
@@ -138,5 +139,15 @@ defmodule MeepleWeb.BoardLive.FieldCard do
       <.card_close_button text="Discover (4AP)" click={click} />
     </div>
     """
+  end
+
+  def handle_event("discover", %{"x" => x, "y" => y}, socket) do
+    Logger.debug("discover [#{x}, #{y}]")
+    {x, y} = {String.to_integer(x), String.to_integer(y)}
+
+    %{name: :discorver, pawn: nil, points: 4, done: 0, params: %{x: x, y: y}}
+    |> Plan.add_action()
+
+    {:noreply, socket}
   end
 end
