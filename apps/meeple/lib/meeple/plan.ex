@@ -47,6 +47,7 @@ defmodule Meeple.Plan do
         %{state | actions: rest}
 
       false ->
+        broadcast_plan_updated()
         %{state | actions: [action | rest]}
     end
   end
