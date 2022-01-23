@@ -28,26 +28,30 @@ defmodule Meeple.Plan do
   end
 
   def tick(pid \\ __MODULE__) do
-    Agent.update(pid, fn %{actions: [%{params: %{x: x, y: y}} = action | rest]} = state ->
-      action = %{action | done: action.done + 1}
-
-      case action.done == action.points do
-        true ->
-          # events:
-          # plan: [plan_updated, field_discovered, yellow_karma_received]
-          # fog_of_war: [fog_of_war_updated], xp_pool: [xp_pool_updated]
-          Meeple.FogOfWar.discover(x, y)
-          # temp
-          broadcast_field_discovered(x, y)
-          broadcast_plan_updated()
-
-          %{state | actions: rest}
-
-        false ->
-          %{state | actions: [action | rest]}
-      end
-    end)
+    Agent.update(pid, &inc_actions(&1))
   end
+
+  defp inc_actions(%{actions: [%{params: %{x: x, y: y}} = action | rest]} = state) do
+    action = %{action | done: action.done + 1}
+
+    case action.done == action.points do
+      true ->
+        # events:
+        # plan: [plan_updated, field_discovered, yellow_karma_received]
+        # fog_of_war: [fog_of_war_updated], xp_pool: [xp_pool_updated]
+        Meeple.FogOfWar.discover(x, y)
+        # temp
+        broadcast_field_discovered(x, y)
+        broadcast_plan_updated()
+
+        %{state | actions: rest}
+
+      false ->
+        %{state | actions: [action | rest]}
+    end
+  end
+
+  defp inc_actions(state), do: state
 
   defp broadcast_field_discovered(x, y) do
     broadcast_event({:field_discovered, %{x: x, y: y}})
