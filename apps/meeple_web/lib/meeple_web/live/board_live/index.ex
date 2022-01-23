@@ -3,20 +3,21 @@ defmodule MeepleWeb.BoardLive.Index do
 
   require Logger
 
-  alias Meeple.{FogOfWar, Territory}
-  alias MeepleWeb.BoardLive.{Map, FieldCard, Pawns, Plan, Location}
+  alias Meeple.Board
+  alias MeepleWeb.BoardLive.{Map, Plan}
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: subscribe()
     {:ok, socket}
   end
 
   def handle_params(params, session, socket) do
-    socket = assign(socket, fog_of_war: true, map_dimensions: map_dimensions())
+    socket = assign(socket, fog_of_war: true, map_dimensions: Board.map_dimensions())
     {:noreply, handle_action(socket.assigns.live_action, params, session, socket)}
   end
 
   def handle_action(:index, _params, _session, socket) do
-    case map_exists?() do
+    case Board.map_exists?() do
       false ->
         socket
         |> put_flash(:error, "no board created or loaded")
@@ -49,8 +50,7 @@ defmodule MeepleWeb.BoardLive.Index do
         <div>Sunny</div>
         <.live_component module={Map} id="map" dimensions={@map_dimensions} fog_of_war={@fog_of_war} />
       </div>
-      <.live_component module={Plan} id="pawns" />
-      <.live_component module={Location} id="location" />
+      <.live_component module={Plan} id="plan" />
     </div>
     """
   end
@@ -81,16 +81,29 @@ defmodule MeepleWeb.BoardLive.Index do
      socket |> push_event("map_changed", %{fog_of_war: false}) |> assign(fog_of_war: false)}
   end
 
-  defp map_exists?() do
-    Territory.exists?()
+  def handle_info({:field_discovered, %{x: _x, y: _y}}, socket) do
+    Logger.info("field discovered")
+
+    send_update(Map,
+      id: "map",
+      fog_of_war: socket.assigns.fog_of_war,
+      dimensions: socket.assigns.map_dimensions
+    )
+
+    {:noreply, socket}
   end
 
-  defp map_dimensions() do
-    Territory.dimensions()
+  def handle_info({:plan_updated}, socket) do
+    Logger.info("plan updated")
+    send_update(Plan, id: "plan")
+    {:noreply, socket}
+  end
+
+  defp subscribe() do
+    Phoenix.PubSub.subscribe(Meeple.PubSub, "GameSession")
   end
 
   defp create_territory(name) do
-    :ok = FogOfWar.create(name)
-    :ok = Territory.create(name)
+    Board.create(name)
   end
 end

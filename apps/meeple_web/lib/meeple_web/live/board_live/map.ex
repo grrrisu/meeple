@@ -4,8 +4,9 @@ defmodule MeepleWeb.BoardLive.Map do
 
   alias Phoenix.LiveView.JS
 
-  alias Meeple.{FogOfWar, Territory}
+  alias Meeple.Board
 
+  import MeepleWeb.BoardLive.FieldHelper
   alias MeepleWeb.BoardLive.FieldCard
 
   def update(assigns, socket) do
@@ -27,7 +28,7 @@ defmodule MeepleWeb.BoardLive.Map do
   def set_field_detail(%{assigns: %{field_detail: nil}} = socket), do: socket
 
   def set_field_detail(%{assigns: %{detail_x: x, detail_y: y, fog_of_war: fog_of_war}} = socket) do
-    assign(socket, field_detail: get_field(x, y, fog_of_war))
+    assign(socket, field_detail: Board.get_field(x, y, fog_of_war))
   end
 
   def render(assigns) do
@@ -60,25 +61,13 @@ defmodule MeepleWeb.BoardLive.Map do
     "grid-template-columns: repeat(#{width}, 75px); grid-template-rows: repeat(#{height}, 75px)"
   end
 
-  def handle_event("show", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: true}} = socket) do
+  def handle_event("show", %{"x" => x, "y" => y}, socket) do
     Logger.debug("show [#{x}, #{y}]")
-    field = FogOfWar.field(x, y)
+    field = Board.get_field(x, y, socket.assigns.fog_of_war)
 
     {:noreply,
      assign(socket,
        map_version: socket.assigns.map_version + 1,
-       field_detail: field,
-       detail_x: x,
-       detail_y: y
-     )}
-  end
-
-  def handle_event("show", %{"x" => x, "y" => y}, %{assigns: %{fog_of_war: false}} = socket) do
-    Logger.debug("show [#{x}, #{y}]")
-    field = Territory.field(x, y)
-
-    {:noreply,
-     assign(socket,
        field_detail: field,
        detail_x: x,
        detail_y: y
@@ -94,7 +83,7 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def field(assigns) do
-    f = get_field(assigns.x, assigns.y, assigns.fog_of_war)
+    f = Board.get_field(assigns.x, assigns.y, assigns.fog_of_war)
 
     assigns =
       assigns
@@ -119,16 +108,4 @@ defmodule MeepleWeb.BoardLive.Map do
     </div>
     """
   end
-
-  defp get_field(x, y, true), do: FogOfWar.field(x, y)
-  defp get_field(x, y, false), do: Territory.field(x, y)
-
-  def vegetation_image(:high_mountains), do: "high_mountains.svg"
-  def vegetation_image(:mountains), do: "mountains.svg"
-  def vegetation_image(:hills), do: "hills.svg"
-  def vegetation_image(:woods), do: "woods.svg"
-  def vegetation_image(:planes), do: "planes.svg"
-  def vegetation_image(:swamps), do: "swamps.svg"
-  def vegetation_image(:lake), do: "lake.svg"
-  def vegetation_image(_any), do: "unknown.svg"
 end
