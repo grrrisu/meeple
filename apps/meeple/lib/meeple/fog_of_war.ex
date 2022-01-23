@@ -26,16 +26,13 @@ defmodule Meeple.FogOfWar do
   end
 
   def field(x, y, pid \\ __MODULE__) do
-    Agent.get(pid, fn %{territory: territory, grid: grid} ->
-      visability = Grid.get(grid, x, y)
-      get_field(x, y, visability, territory)
-    end)
+    Agent.get(pid, &get_field(x, y, &1))
   end
 
   def discover(x, y, pid \\ __MODULE__) do
     Agent.get_and_update(pid, fn %{territory: territory, grid: grid} = state ->
       new_fog = Grid.put(grid, x, y, @full_visability)
-      field = get_field(x, y, @full_visability, territory)
+      field = get_field_detail(x, y, @full_visability, territory)
       {field, %{state | grid: new_fog}}
     end)
   end
@@ -47,7 +44,14 @@ defmodule Meeple.FogOfWar do
     Grid.create(width, height, &module.create_fog/2)
   end
 
-  defp get_field(x, y, visability, territory) do
+  defp get_field(_x, _y, %{grid: nil}), do: raise("grid has not yet been created")
+
+  defp get_field(x, y, %{territory: territory, grid: grid}) do
+    visability = Grid.get(grid, x, y)
+    get_field_detail(x, y, visability, territory)
+  end
+
+  defp get_field_detail(x, y, visability, territory) do
     case visability do
       @full_visability -> Territory.field(x, y, territory)
       @only_vegetation -> %{vegetation: Territory.field(x, y, territory) |> Map.get(:vegetation)}

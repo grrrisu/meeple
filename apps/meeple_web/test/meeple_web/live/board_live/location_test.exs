@@ -1,13 +1,13 @@
 defmodule MeepleWeb.BoardLive.LocationTest do
   use MeepleWeb.ConnCase
-  import Phoenix.LiveViewTest
+  # import Phoenix.LiveViewTest
 
-  alias Meeple.Territory
+  # alias Meeple.Territory
 
-  setup do
-    Territory.create("test")
-    :ok
-  end
+  # setup do
+  #   Territory.create("test")
+  #   :ok
+  # end
 
   # test "setup board", %{conn: conn} do
   #   {:ok, view, _html} = live(conn, "/board")
