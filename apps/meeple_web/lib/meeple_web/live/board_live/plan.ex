@@ -23,6 +23,6 @@ defmodule MeepleWeb.BoardLive.Plan do
 
   def handle_event("run", _params, socket) do
     Plan.tick()
-    {:noreply, assign(socket, plan: Plan.get())}
+    {:noreply, socket}
   end
 end
