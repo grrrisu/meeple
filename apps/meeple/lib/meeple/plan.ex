@@ -37,8 +37,8 @@ defmodule Meeple.Plan do
     case action.done == action.points do
       true ->
         # events:
-        # plan: [plan_updated, field_discovered, yellow_karma_received]
-        # fog_of_war: [fog_of_war_updated], xp_pool: [xp_pool_updated]
+        # plan: [plan_updated, field_discovered, yellow_karma_received, execution_stopped]
+        # fog_of_war: [fog_of_war_updated], xp_pool: [xp_pool_updated], game_session: [clock_stopped]
         Meeple.FogOfWar.discover(x, y)
         # temp
         broadcast_field_discovered(x, y)
@@ -47,6 +47,8 @@ defmodule Meeple.Plan do
         %{state | actions: rest}
 
       false ->
+        # events:
+        # plan: [plan_updated, execution_finished]
         broadcast_plan_updated()
         %{state | actions: [action | rest]}
     end
