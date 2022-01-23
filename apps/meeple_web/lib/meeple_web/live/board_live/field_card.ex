@@ -2,8 +2,8 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   use MeepleWeb, :live_component
   require Logger
 
-  alias Meeple.Plan
-  alias MeepleWeb.BoardLive.Map, as: BoardMap
+  alias Meeple.Board
+  import MeepleWeb.BoardLive.FieldHelper
 
   def render(%{field: nil} = assigns) do
     ~H"""
@@ -23,7 +23,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
           <.card_title title={@field[:building] || @field[:vegetation] || :"Terra Incognita"} />
           <div class="my-2 mx-auto grid justify-center bg-steelbluex-100">
             <image
-              src={"/images/fields/#{(@field[:building] && "homebase.svg") || BoardMap.vegetation_image(@field[:vegetation])}"}
+              src={"/images/fields/#{(@field[:building] && "homebase.svg") || vegetation_image(@field[:vegetation])}"}
               class="border border-steelblue-800"
               style="height: 240px"/>
           </div>
@@ -146,7 +146,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     {x, y} = {String.to_integer(x), String.to_integer(y)}
 
     %{name: :discorver, pawn: nil, points: 4, done: 0, params: %{x: x, y: y}}
-    |> Plan.add_action()
+    |> Board.add_action()
 
     {:noreply, socket}
   end
