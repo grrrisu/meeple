@@ -2,10 +2,10 @@ defmodule MeepleWeb.BoardLive.LocationTest do
   use MeepleWeb.ConnCase
   # import Phoenix.LiveViewTest
 
-  # alias Meeple.Territory
+  # alias Meeple.Board
 
   # setup do
-  #   Territory.create("test")
+  #   Board.create("test")
   #   :ok
   # end
 

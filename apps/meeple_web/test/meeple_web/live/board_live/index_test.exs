@@ -2,11 +2,10 @@ defmodule MeepleWeb.BoardLive.IndexTest do
   use MeepleWeb.ConnCase
   import Phoenix.LiveViewTest
 
-  alias Meeple.Territory
+  alias Meeple.Board
 
   setup do
-    Territory.create("test")
-    :ok
+    Board.create("test")
   end
 
   test "got to current board", %{conn: conn} do

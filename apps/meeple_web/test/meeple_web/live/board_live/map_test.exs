@@ -2,11 +2,10 @@ defmodule MeepleWeb.BoardLive.MapTest do
   use MeepleWeb.ConnCase
   import Phoenix.LiveViewTest
 
-  alias Meeple.{FogOfWar, Territory}
+  alias Meeple.Board
 
   setup do
-    :ok = FogOfWar.create("test")
-    :ok = Territory.create("test")
+    Board.create("test")
   end
 
   test "setup board", %{conn: conn} do
