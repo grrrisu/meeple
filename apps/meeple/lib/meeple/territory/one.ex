@@ -9,6 +9,20 @@ defmodule Meeple.Territory.One do
     }
   end
 
+  def headquarter(), do: {7, 1}
+
+  def pawns() do
+    [%{id: 1, x: 7, y: 1, action_points: 12, planned: 0, executed: 0}]
+  end
+
+  def inventory() do
+    [flintstone: 1, berry: 15]
+  end
+
+  def xp_pool() do
+    %{red: 0, yellow: 0, green: 0, blue: 0, purple: 0}
+  end
+
   def create_fog(7, 1), do: 5
   def create_fog(4, 5), do: 1
   def create_fog(11, 5), do: 1

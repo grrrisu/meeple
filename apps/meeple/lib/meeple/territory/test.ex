@@ -1,6 +1,20 @@
 defmodule Meeple.Territory.Test do
   alias Sim.Grid
 
+  def headquarter(), do: {1, 1}
+
+  def pawns() do
+    [%{id: 1, x: 1, y: 1, action_points: 12, planned: 0, executed: 0}]
+  end
+
+  def inventory() do
+    [flintstone: 1, berry: 15]
+  end
+
+  def xp_pool() do
+    %{red: 0, yellow: 0, green: 0, blue: 0, purple: 0}
+  end
+
   def create_fog(1, 1), do: 5
   def create_fog(2, 3), do: 1
   def create_fog(_x, _y), do: 0

@@ -28,6 +28,13 @@ defmodule Meeple.Territory do
     end)
   end
 
+  def set_pawn(pawn, pid \\ __MODULE__) do
+    Agent.cast(pid, fn grid ->
+      field = Grid.get(grid, pawn.x, pawn.y)
+      Grid.put(grid, pawn.x, pawn.y, Map.merge(field, %{pawns: [pawn.id]}))
+    end)
+  end
+
   def get_dimensions(nil) do
     {0, 0}
   end

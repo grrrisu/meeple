@@ -44,6 +44,9 @@ defmodule MeepleWeb.BoardLive.FieldCard do
               <%= if @field[:danger] do %>
                 Danger: <%= @field[:danger] |> inspect() %><br/>
               <% end %>
+              <%= if @field[:pawns] do %>
+                Pawns: <%= @field[:pawns] |> inspect() %><br/>
+              <% end %>
             </p>
             <.action_list field={@field} x={@x} y={@y} target={@myself} />
           </div>
