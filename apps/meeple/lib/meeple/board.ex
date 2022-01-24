@@ -8,6 +8,7 @@ defmodule Meeple.Board do
   def create(name) do
     :ok = FogOfWar.create(name)
     :ok = Territory.create(name)
+    Plan.clear()
   end
 
   def map_exists?() do
