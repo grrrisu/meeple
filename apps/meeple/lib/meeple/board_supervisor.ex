@@ -1,7 +1,7 @@
 defmodule Meeple.BoardSupervisor do
   use Supervisor
 
-  alias Meeple.{FogOfWar, GameSession, Plan, Territory}
+  alias Meeple.{Tableau, FogOfWar, GameSession, Plan, Territory}
 
   def start_link(_opts) do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
@@ -11,6 +11,7 @@ defmodule Meeple.BoardSupervisor do
   def init(:ok) do
     children = [
       Territory,
+      Tableau,
       FogOfWar,
       Plan,
       GameSession
