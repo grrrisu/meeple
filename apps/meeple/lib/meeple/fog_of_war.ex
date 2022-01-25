@@ -1,4 +1,13 @@
 defmodule Meeple.FogOfWar do
+  @moduledoc """
+  Fog of war, shows only the parts of the territory to the player, that are visible to him/her.
+  It also combines information from the territory with player specific informations.
+
+  state:
+  territory: module/pid of Territory
+  fog: visability
+  grid: combined information territory + player
+  """
   use Agent
 
   alias Sim.Grid
@@ -13,45 +22,72 @@ defmodule Meeple.FogOfWar do
 
   def start_link(args \\ []) do
     Agent.start_link(
-      fn -> %{territory: args[:territory] || Territory, grid: nil} end,
+      fn -> %{territory: args[:territory] || Territory, grid: nil, fog: nil} end,
       name: args[:name] || __MODULE__
     )
   end
 
   def create(name, pid \\ __MODULE__) do
     Agent.get_and_update(pid, fn state ->
-      grid = create_grid(name)
-      {:ok, %{state | grid: grid}}
+      fog = create_fog(name)
+      grid = update_grid(fog, state.territory)
+      {:ok, %{state | fog: fog, grid: grid}}
     end)
+  end
+
+  def get(pid \\ __MODULE__) do
+    Agent.get(pid, &get_grid(&1))
   end
 
   def field(x, y, pid \\ __MODULE__) do
     Agent.get(pid, &get_field(x, y, &1))
   end
 
-  def discover(x, y, pid \\ __MODULE__) do
-    Agent.get_and_update(pid, fn %{territory: territory, grid: grid} = state ->
-      new_fog = Grid.put(grid, x, y, @full_visability)
-      field = get_field_detail(x, y, @full_visability, territory)
-      {field, %{state | grid: new_fog}}
+  def update_field(x, y, pid \\ __MODULE__) do
+    Agent.get_and_update(pid, fn %{territory: territory, fog: fog, grid: grid} = state ->
+      visability = Grid.get(fog, x, y)
+      {field, grid} = update_field_from_territory(x, y, grid, visability, territory)
+      {field, %{state | grid: grid}}
     end)
   end
 
-  defp create_grid("test"), do: create_grid(TestTerritory, 3, 4)
-  defp create_grid("one"), do: create_grid(One, 15, 7)
+  def discover(x, y, pid \\ __MODULE__) do
+    Agent.get_and_update(pid, fn %{territory: territory, fog: fog, grid: grid} = state ->
+      fog = Grid.put(fog, x, y, @full_visability)
+      {field, grid} = update_field_from_territory(x, y, grid, @full_visability, territory)
+      {field, %{state | fog: fog, grid: grid}}
+    end)
+  end
 
-  defp create_grid(module, width, height) when is_atom(module) do
+  defp create_fog("test"), do: create_fog(TestTerritory, 3, 4)
+  defp create_fog("one"), do: create_fog(One, 15, 7)
+
+  defp create_fog(module, width, height) when is_atom(module) do
     Grid.create(width, height, &module.create_fog/2)
   end
 
-  defp get_field(_x, _y, %{grid: nil}), do: raise("grid has not yet been created")
+  defp get_grid(%{grid: nil}), do: raise("grid has not yet been created")
+  defp get_grid(%{grid: grid}), do: Grid.map(grid)
 
-  defp get_field(x, y, %{territory: territory, grid: grid}) do
-    visability = Grid.get(grid, x, y)
-    get_field_detail(x, y, visability, territory)
+  defp get_field(_x, _y, %{grid: nil}), do: raise("grid has not yet been created")
+  defp get_field(x, y, %{grid: grid}), do: Grid.get(grid, x, y)
+
+  defp update_grid(fog, territory) do
+    Grid.create(Grid.width(fog), Grid.height(fog), fn x, y ->
+      fetch_field_from_territory(x, y, Grid.get(fog, x, y), territory)
+    end)
   end
 
-  defp get_field_detail(x, y, visability, territory) do
+  defp update_field_from_territory(x, y, grid, visability, territory) do
+    field =
+      fetch_field_from_territory(x, y, visability, territory)
+      |> Map.merge(%{visability: visability})
+
+    grid = Grid.put(grid, x, y, field)
+    {field, grid}
+  end
+
+  defp fetch_field_from_territory(x, y, visability, territory) do
     case visability do
       @full_visability -> Territory.field(x, y, territory)
       @only_vegetation -> %{vegetation: Territory.field(x, y, territory) |> Map.get(:vegetation)}

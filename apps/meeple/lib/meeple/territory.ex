@@ -17,6 +17,10 @@ defmodule Meeple.Territory do
     Agent.get(pid, &Grid.get(&1, x, y))
   end
 
+  def get(pid \\ __MODULE__) do
+    Agent.get(pid, &Grid.map(&1))
+  end
+
   def dimensions(pid \\ __MODULE__) do
     Agent.get(pid, &get_dimensions/1)
   end
