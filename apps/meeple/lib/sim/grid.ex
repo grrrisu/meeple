@@ -68,4 +68,19 @@ defmodule Sim.Grid do
   def height(grid) do
     map_size(grid[0])
   end
+
+  # [{x0, y0, value}, {x1, y0, value}, ...]
+  def map(grid, func \\ &{&1, &2, &3}) do
+    Enum.map(grid, fn {x, col} ->
+      Enum.map(col, fn {y, value} ->
+        {func.(x, y, value)}
+      end)
+    end)
+    |> Enum.reverse()
+    |> Enum.zip()
+    |> Enum.map(&Tuple.to_list/1)
+    |> List.flatten()
+    |> Enum.map(fn {i} -> i end)
+    |> Enum.reverse()
+  end
 end

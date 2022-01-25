@@ -16,7 +16,7 @@ defmodule MeepleWeb.BoardLive.Map do
      socket
      |> assign(assigns)
      |> assign(
-       map_version: 0,
+       fields: get_grid(assigns.fog_of_war),
        width: width,
        height: height,
        field_detail: nil,
@@ -25,10 +25,8 @@ defmodule MeepleWeb.BoardLive.Map do
      )}
   end
 
-  def set_field_detail(%{assigns: %{field_detail: nil}} = socket), do: socket
-
-  def set_field_detail(%{assigns: %{detail_x: x, detail_y: y, fog_of_war: fog_of_war}} = socket) do
-    assign(socket, field_detail: Board.get_field(x, y, fog_of_war))
+  defp get_grid(fog_of_war) do
+    Board.get_grid(fog_of_war)
   end
 
   def render(assigns) do
@@ -44,10 +42,8 @@ defmodule MeepleWeb.BoardLive.Map do
       <div
         class="grid place-content-center relative"
         style={css_grid_template(@width, @height)}>
-        <%= for y <- (@height - 1)..0 do %>
-          <%= for x <- 0..(@width - 1) do %>
-            <.field id={"field-#{x}-#{y}"} x={x} y={y} map_version={@map_version} myself={@myself} fog_of_war={@fog_of_war} />
-          <% end %>
+        <%= for field <- @fields do %>
+          <.field field={field} myself={@myself} />
         <% end %>
         <.live_component module={FieldCard} id="field-card" field={@field_detail} x={@detail_x} y={@detail_y}/>
       </div>
@@ -55,6 +51,10 @@ defmodule MeepleWeb.BoardLive.Map do
       <div style="grid-column: 1 / span 3"><i class="las la-caret-down la-3x"></i></div>
     </div>
     """
+  end
+
+  def field_id({x, y, _}) do
+    "field-#{x}-#{y}"
   end
 
   def css_grid_template(width, height) do
@@ -67,7 +67,6 @@ defmodule MeepleWeb.BoardLive.Map do
 
     {:noreply,
      assign(socket,
-       map_version: socket.assigns.map_version + 1,
        field_detail: field,
        detail_x: x,
        detail_y: y
@@ -83,13 +82,15 @@ defmodule MeepleWeb.BoardLive.Map do
   end
 
   def field(assigns) do
-    f = Board.get_field(assigns.x, assigns.y, assigns.fog_of_war)
+    {x, y, field} = assigns.field
 
     assigns =
       assigns
-      |> assign(vegetation: f[:vegetation])
-      |> assign(flora: f[:flora] && Enum.join(f[:flora], ": "))
-      |> assign(fauna: (f[:herbivore] || f[:predator] || []) |> Enum.join(": "))
+      |> assign(x: x, y: y)
+      |> assign(vegetation: field[:vegetation])
+      |> assign(building: field[:building])
+      |> assign(flora: field[:flora] && Enum.join(field[:flora], ": "))
+      |> assign(fauna: (field[:herbivore] || field[:predator] || []) |> Enum.join(": "))
 
     ~H"""
     <div
@@ -99,9 +100,9 @@ defmodule MeepleWeb.BoardLive.Map do
       phx-click={fade_in(@x, @y, @myself)}
       title={"v: #{@vegetation}\nf: #{@flora}\na: #{@fauna}"}>
       <%= cond do %>
-        <% f[:building] -> %>
+        <% @building -> %>
           <image src="/images/fields/homebase.svg" class="w-full"/>
-        <% f[:vegetation] -> %>
+        <% @vegetation -> %>
           <image src={"/images/fields/#{vegetation_image(@vegetation)}"} class="w-full"/>
         <% true -> %>
       <% end %>

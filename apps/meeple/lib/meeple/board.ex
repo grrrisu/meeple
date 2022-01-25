@@ -6,8 +6,8 @@ defmodule Meeple.Board do
   alias Meeple.{Tableau, FogOfWar, Plan, Territory}
 
   def create(name) do
-    :ok = FogOfWar.create(name)
     :ok = Territory.create(name)
+    :ok = FogOfWar.create(name)
     :ok = Tableau.create(name)
     Tableau.pawns() |> Enum.each(&Territory.set_pawn(&1))
     Plan.clear()
@@ -20,6 +20,9 @@ defmodule Meeple.Board do
   def map_dimensions() do
     Territory.dimensions()
   end
+
+  def get_grid(true), do: FogOfWar.get()
+  def get_grid(false), do: Territory.get()
 
   def get_field(x, y, true), do: FogOfWar.field(x, y)
   def get_field(x, y, false), do: Territory.field(x, y)
