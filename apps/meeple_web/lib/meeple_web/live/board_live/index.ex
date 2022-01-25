@@ -12,7 +12,7 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_params(params, session, socket) do
-    socket = assign(socket, fog_of_war: true, map_dimensions: Board.map_dimensions())
+    socket = assign(socket, fog_of_war: true)
     {:noreply, handle_action(socket.assigns.live_action, params, session, socket)}
   end
 
@@ -48,7 +48,7 @@ defmodule MeepleWeb.BoardLive.Index do
       </div>
       <div class="board-map border-8 border-gray-900">
         <div>Sunny</div>
-        <.live_component module={Map} id="map" dimensions={@map_dimensions} fog_of_war={@fog_of_war} />
+        <.live_component module={Map} id="map" fog_of_war={@fog_of_war} />
       </div>
       <.live_component module={Plan} id="plan" />
     </div>
@@ -86,8 +86,7 @@ defmodule MeepleWeb.BoardLive.Index do
 
     send_update(Map,
       id: "map",
-      fog_of_war: socket.assigns.fog_of_war,
-      dimensions: socket.assigns.map_dimensions
+      fog_of_war: socket.assigns.fog_of_war
     )
 
     {:noreply, socket}

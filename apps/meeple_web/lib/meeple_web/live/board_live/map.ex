@@ -10,23 +10,19 @@ defmodule MeepleWeb.BoardLive.Map do
   alias MeepleWeb.BoardLive.FieldCard
 
   def update(assigns, socket) do
-    {width, height} = assigns.dimensions
+    {width, height} = Board.map_dimensions()
 
     {:ok,
      socket
      |> assign(assigns)
      |> assign(
-       fields: get_grid(assigns.fog_of_war),
+       fields: Board.get_grid(assigns.fog_of_war),
        width: width,
        height: height,
        field_detail: nil,
        detail_x: 0,
        detail_y: 0
      )}
-  end
-
-  defp get_grid(fog_of_war) do
-    Board.get_grid(fog_of_war)
   end
 
   def render(assigns) do
