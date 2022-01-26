@@ -36,7 +36,7 @@ defmodule MeepleWeb.BoardLive.Map do
       <div style="grid-column: 1 / span 3"><i class="las la-caret-up la-3x"></i></div>
       <div class="justify-self-end"><i class="las la-caret-left la-3x "></i></div>
       <div
-        class="grid place-content-center relative"
+        class="grid place-content-center relative border-t border-l border-b-2 border-r-2 border-gray-900"
         style={css_grid_template(@width, @height)}>
         <%= for field <- @fields do %>
           <.field field={field} myself={@myself} />
@@ -44,7 +44,9 @@ defmodule MeepleWeb.BoardLive.Map do
         <.live_component module={FieldCard} id="field-card" field={@field_detail} x={@detail_x} y={@detail_y}/>
       </div>
       <div class="justify-self-start"><i class="las la-caret-right la-3x"></i></div>
-      <div style="grid-column: 1 / span 3"><i class="las la-caret-down la-3x"></i></div>
+      <div style="grid-column: 1 / span 3">
+        <i class="las la-caret-down la-3x"></i>
+      </div>
     </div>
     """
   end
@@ -91,12 +93,18 @@ defmodule MeepleWeb.BoardLive.Map do
     ~H"""
     <div
       id={"field-#{@x}-#{@y}"}
-      class="field text-[0.5rem]"
+      class="field text-[0.5rem] relative"
       @click="showFieldCard = true"
       phx-click={fade_in(@x, @y, @myself)}
       title={"v: #{@vegetation}\nf: #{@flora}\na: #{@fauna}"}>
       <%= cond do %>
         <% @building -> %>
+          <div class="absolute m-3" style="width: 25px; height: 25px">
+            <img src="/images/ui/human_token.svg" class="w-full"/>
+          </div>
+          <div class="absolute m-8 z-10" style="width: 50px; height: 50px">
+            <img src="/images/ui/human_token.svg" class="w-full"/>
+          </div>
           <image src="/images/fields/homebase.svg" class="w-full"/>
         <% @vegetation -> %>
           <image src={"/images/fields/#{vegetation_image(@vegetation)}"} class="w-full"/>

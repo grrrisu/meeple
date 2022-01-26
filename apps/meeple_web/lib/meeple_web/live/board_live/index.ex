@@ -46,12 +46,20 @@ defmodule MeepleWeb.BoardLive.Index do
       <div class="board-menu">
         <a href="/">&lt; Back</a>
       </div>
-      <div class="board-map border-8 border-gray-900">
+      <div class="board-map border-8 border-gray-900 bg-steelblue-400">
         <div>Sunny</div>
         <.live_component module={Map} id="map" fog_of_war={@fog_of_war} />
+        <div class="mx-16 py-3 grid justify-start grid-cols-12">
+          <div style="width: 50px; height: 50px">
+            <img src="/images/ui/human_token.svg" class="w-full"/>
+          </div>
+          <div style="width: 50px; height: 50px">
+            <img src="/images/ui/human_token_dark.svg" class="w-full"/>
+          </div>
+        </div>
       </div>
-      <.live_component module={Plan} id="plan" />
     </div>
+    <.live_component module={Plan} id="plan" />
     """
   end
 
