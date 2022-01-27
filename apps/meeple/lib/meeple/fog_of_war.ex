@@ -52,10 +52,10 @@ defmodule Meeple.FogOfWar do
   end
 
   def discover(x, y, pid \\ __MODULE__) do
-    Agent.get_and_update(pid, fn %{territory: territory, fog: fog, grid: grid} = state ->
+    Agent.cast(pid, fn %{territory: territory, fog: fog, grid: grid} = state ->
       fog = Grid.put(fog, x, y, @full_visability)
-      {field, grid} = update_field_from_territory(x, y, grid, @full_visability, territory)
-      {field, %{state | fog: fog, grid: grid}}
+      {_field, grid} = update_field_from_territory(x, y, grid, @full_visability, territory)
+      %{state | fog: fog, grid: grid}
     end)
   end
 

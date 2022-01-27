@@ -34,8 +34,20 @@ defmodule Meeple.Territory do
 
   def set_pawn(pawn, pid \\ __MODULE__) do
     Agent.cast(pid, fn grid ->
-      field = Grid.get(grid, pawn.x, pawn.y)
-      Grid.put(grid, pawn.x, pawn.y, Map.merge(field, %{pawns: [pawn.id]}))
+      pawns = [pawn.id | Grid.get(grid, pawn.x, pawn.y) |> Map.get(:pawns, [])] |> Enum.uniq()
+      Grid.merge_field(grid, pawn.x, pawn.y, %{pawns: pawns})
+    end)
+  end
+
+  def move_pawn(pawn, x, y, pid \\ __MODULE__) do
+    Agent.get_and_update(pid, fn grid ->
+      from_field = Grid.get(grid, pawn.x, pawn.y)
+      pawns = Map.get(from_field, :pawns, []) |> List.delete(pawn.id)
+      grid = Grid.merge_field(grid, pawn.x, pawn.y, %{pawns: pawns})
+      to_field = Grid.get(grid, x, y)
+      pawns = [pawn.id | Map.get(to_field, :pawns, [])]
+      grid = Grid.merge_field(grid, x, y, %{pawns: pawns})
+      {%{pawn | x: x, y: y}, grid}
     end)
   end
 

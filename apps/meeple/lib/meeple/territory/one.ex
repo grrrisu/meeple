@@ -12,11 +12,11 @@ defmodule Meeple.Territory.One do
   def headquarter(), do: {7, 1}
 
   def pawns() do
-    [%{id: 1, x: 7, y: 1, action_points: 12, planned: 0, executed: 0}]
+    [%{id: 1, x: 7, y: 1, action_points: 12, planned: 0, executed: 0, health: 3}]
   end
 
   def inventory() do
-    [flintstone: 1, berry: 15]
+    [flintstone: 1, berry: 3]
   end
 
   def xp_pool() do
