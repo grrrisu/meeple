@@ -83,4 +83,9 @@ defmodule Sim.Grid do
     |> Enum.map(fn {i} -> i end)
     |> Enum.reverse()
   end
+
+  def merge_field(grid, x, y, value, func \\ &Map.merge(&1, &2)) do
+    field = Grid.get(grid, x, y)
+    Grid.put(grid, x, y, func.(field, value))
+  end
 end
