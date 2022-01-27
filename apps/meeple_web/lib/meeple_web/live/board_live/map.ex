@@ -102,7 +102,7 @@ defmodule MeepleWeb.BoardLive.Map do
           <div class="absolute m-3" style="width: 25px; height: 25px">
             <img src="/images/ui/human_token.svg" class="w-full"/>
           </div>
-          <div class="absolute m-8 z-10" style="width: 50px; height: 50px">
+          <div class="absolute m-8 z-10" style="width: 25px; height: 25px">
             <img src="/images/ui/human_token.svg" class="w-full"/>
           </div>
           <image src="/images/fields/homebase.svg" class="w-full"/>
