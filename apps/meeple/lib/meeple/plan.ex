@@ -39,7 +39,7 @@ defmodule Meeple.Plan do
   @spec add_action(action, atom | pid | {atom, any} | {:via, atom, any}) :: any
   def add_action(action, pid \\ __MODULE__) do
     Agent.update(pid, fn state ->
-      state = update_state(state, move_action(action))
+      state = may_add_move_action(state, action)
       state = update_state(state, action)
       # temp
       broadcast_plan_updated()
@@ -47,17 +47,21 @@ defmodule Meeple.Plan do
     end)
   end
 
+  def may_add_move_action(state, %{name: :move}), do: state
+  def may_add_move_action(state, %{pawn: %{x: x, y: y}, x: x, y: y}), do: state
+  def may_add_move_action(state, action), do: update_state(state, move_action(action))
+
   # @spec update_state(map, action) :: map
-  defp update_state(state, action) do
+  def update_state(state, action) do
     actions = :queue.in(action, state.actions)
     total_points = action.points + state.total_points
     %{actions: actions, total_points: total_points}
   end
 
   @move_costs 3
-  defp move_action(%{pawn: pawn, x: x, y: y}) do
+  def move_action(%{pawn: pawn, x: x, y: y}) do
     # points = (abs(pawn.x - x) + abs(pawn.y - y)) / @move_costs # wheater and pawn.skills and ...
-    points = ((abs(7 - x) + abs(1 - y)) / @move_costs) |> Float.ceil() |> trunc()
+    points = ((abs(pawn.x - x) + abs(pawn.y - y)) / @move_costs) |> Float.ceil() |> trunc()
     %{name: :move, pawn: pawn, x: x, y: y, done: 0, points: points}
   end
 
@@ -70,7 +74,7 @@ defmodule Meeple.Plan do
     end)
   end
 
-  defp inc_action(%{actions: actions} = state) do
+  def inc_action(%{actions: actions} = state) do
     {{:value, action}, actions} = :queue.out(actions)
     action = %{action | done: action.done + 1}
 
@@ -108,7 +112,7 @@ defmodule Meeple.Plan do
     # events:
     # plan: [pawn_moved, field_discovered/updated, may_trigger_danger_event]
     # fog_of_war: [fog_of_war_updated], ...
-    # Meeple.Territory.move_pawn(from: {pawn.x, pawn.y}, to: {x, y})
+    # Meeple.Territory.move_pawn(from: {pawn.x, pawn.y}, to: x, y)
     # Meeple.Pawn.move(pawn, x, y)
     # Meeple.FogOfWar.discover(x, y) # update fog_of_war by passing by expect it is has not yet been discoverd
     # broadcast_field_discovered(x, y)
