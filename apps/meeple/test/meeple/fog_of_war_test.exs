@@ -16,7 +16,7 @@ defmodule Meeple.FogOfWarTest do
 
   test "get created view", %{fog_of_war_pid: pid} do
     fields = FogOfWar.get(pid)
-    assert 12 = Enum.count(fields)
+    assert 12 == Enum.count(fields)
     assert Enum.member?(fields, {1, 1, %{building: :headquarter, vegetation: :mountains}})
   end
 
@@ -41,7 +41,7 @@ defmodule Meeple.FogOfWarTest do
   end
 
   test "discover", %{fog_of_war_pid: pid} do
-    assert %{} = FogOfWar.field(1, 2, pid)
+    assert %{} == FogOfWar.field(1, 2, pid)
     :ok = FogOfWar.discover(1, 2, pid)
     assert %{vegetation: :planes, visability: 5} = FogOfWar.field(1, 2, pid)
   end

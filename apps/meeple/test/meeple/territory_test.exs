@@ -37,6 +37,6 @@ defmodule Meeple.TerritoryTest do
     to = Territory.field(2, 1, pid)
     assert %{x: 2, y: 1} = pawn
     assert Enum.empty?(from.pawns)
-    assert [1] = to.pawns
+    assert [1] == to.pawns
   end
 end
