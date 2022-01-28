@@ -148,7 +148,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     Logger.debug("discover [#{x}, #{y}]")
     {x, y} = {String.to_integer(x), String.to_integer(y)}
 
-    %{name: :discover, pawn: nil, points: 4, done: 0, x: x, y: y}
+    %{name: :discover, pawn: %{id: 1, x: 7, y: 1}, points: 4, done: 0, x: x, y: y}
     |> Board.add_action()
 
     {:noreply, socket}
