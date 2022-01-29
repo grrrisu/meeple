@@ -2,12 +2,8 @@ defmodule MeepleWeb.BoardLive.Map do
   use MeepleWeb, :live_component
   require Logger
 
-  alias Phoenix.LiveView.JS
-
   alias Meeple.Board
-
-  import MeepleWeb.BoardLive.FieldHelper
-  alias MeepleWeb.BoardLive.FieldCard
+  alias MeepleWeb.BoardLive.{Field, FieldCard}
 
   def update(assigns, socket) do
     {width, height} = Board.map_dimensions()
@@ -39,7 +35,7 @@ defmodule MeepleWeb.BoardLive.Map do
         class="grid place-content-center relative border-t border-l border-b-2 border-r-2 border-gray-900"
         style={css_grid_template(@width, @height)}>
         <%= for field <- @fields do %>
-          <.field field={field} myself={@myself} />
+          <Field.field field={field} target={@myself} />
         <% end %>
         <.live_component module={FieldCard} id="field-card" field={@field_detail} x={@detail_x} y={@detail_y}/>
       </div>
@@ -49,10 +45,6 @@ defmodule MeepleWeb.BoardLive.Map do
       </div>
     </div>
     """
-  end
-
-  def field_id({x, y, _}) do
-    "field-#{x}-#{y}"
   end
 
   def css_grid_template(width, height) do
@@ -69,48 +61,5 @@ defmodule MeepleWeb.BoardLive.Map do
        detail_x: x,
        detail_y: y
      )}
-  end
-
-  def fade_in(x, y, target) do
-    JS.push("show", value: %{x: x, y: y}, target: target)
-    |> JS.show(
-      transition: {"ease-out duration-500", "opacity-25", "opacity-100"},
-      to: "#field-card"
-    )
-  end
-
-  def field(assigns) do
-    {x, y, field} = assigns.field
-
-    assigns =
-      assigns
-      |> assign(x: x, y: y)
-      |> assign(vegetation: field[:vegetation])
-      |> assign(building: field[:building])
-      |> assign(flora: field[:flora] && Enum.join(field[:flora], ": "))
-      |> assign(fauna: (field[:herbivore] || field[:predator] || []) |> Enum.join(": "))
-
-    ~H"""
-    <div
-      id={"field-#{@x}-#{@y}"}
-      class="field text-[0.5rem] relative"
-      @click="showFieldCard = true"
-      phx-click={fade_in(@x, @y, @myself)}
-      title={"v: #{@vegetation}\nf: #{@flora}\na: #{@fauna}"}>
-      <%= cond do %>
-        <% @building -> %>
-          <div class="absolute m-3" style="width: 25px; height: 25px">
-            <img src="/images/ui/human_token.svg" class="w-full"/>
-          </div>
-          <div class="absolute m-8 z-10" style="width: 25px; height: 25px">
-            <img src="/images/ui/human_token.svg" class="w-full"/>
-          </div>
-          <image src="/images/fields/homebase.svg" class="w-full"/>
-        <% @vegetation -> %>
-          <image src={"/images/fields/#{vegetation_image(@vegetation)}"} class="w-full"/>
-        <% true -> %>
-      <% end %>
-    </div>
-    """
   end
 end

@@ -7,9 +7,9 @@ defmodule Meeple.Board do
 
   def create(name) do
     :ok = Territory.create(name)
-    :ok = FogOfWar.create(name)
     :ok = Tableau.create(name)
     Tableau.pawns() |> Enum.each(&Territory.set_pawn(&1))
+    :ok = FogOfWar.create(name)
     Plan.clear()
   end
 
