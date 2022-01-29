@@ -7,7 +7,8 @@ defmodule MeepleWeb.BoardLive.Plan do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(plan: Plan.get())}
+     |> assign(plan: Plan.get())
+     |> assign(hour: 3)}
   end
 
   def render(assigns) do
@@ -27,7 +28,7 @@ defmodule MeepleWeb.BoardLive.Plan do
         </div>
 
         <%= for {action, index} <- Enum.with_index(@plan.actions) do %>
-          <.action index={index} action={action} />
+          <.action index={index} action={action} hour={@hour} />
         <% end %>
       </div>
 
@@ -43,8 +44,13 @@ defmodule MeepleWeb.BoardLive.Plan do
 
   def action(assigns) do
     ~H"""
+      <%= if @hour == @index do %>
+        <img style={"width: 25px; top: 10px; left: #{@index *90 + 30}px"} class="absolute" src={"/images/ui/sun_symbol.svg"} />
+      <% end %>
       <img style={"width: 90px; top: -10px; left: #{@index *90}px"} class="absolute" src={"/images/ui/action_#{@action.name}.svg"} />
-      <img style={"width: 25px; top: 110px; left: #{@index *90 + 30}px"} class="absolute" src={"/images/ui/action_points_#{@action.points - @action.done}.svg"} />
+      <%= if @action.points - @action.done > 0 do %>
+        <img style={"width: 25px; top: 110px; left: #{@index *90 + 30}px"} class="absolute" src={"/images/ui/action_points_#{@action.points - @action.done}.svg"} />
+      <% end %>
     """
   end
 
