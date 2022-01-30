@@ -32,11 +32,8 @@ defmodule MeepleWeb.BoardLive.Plan do
         <% end %>
       </div>
 
-      <div>
-        <%= for action <- @plan.actions do %>
-          <div class="border"><%= inspect(action) %></div>
-        <% end %>
-        <div class="border" phx-click="run" phx-target={@myself}>run</div>
+      <div class="m-2">
+        <div phx-click="next-hour">Next Hour</div>
       </div>
     </div>
     """
@@ -52,10 +49,5 @@ defmodule MeepleWeb.BoardLive.Plan do
         <img style={"width: 25px; top: 110px; left: #{@index *90 + 30}px"} class="absolute" src={"/images/ui/action_points_#{@action.points - @action.done}.svg"} />
       <% end %>
     """
-  end
-
-  def handle_event("run", _params, socket) do
-    Plan.tick()
-    {:noreply, socket}
   end
 end

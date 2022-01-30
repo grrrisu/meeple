@@ -1,4 +1,4 @@
-defmodule ThundermoonWeb.LiveHelpers do
+defmodule MeepleWeb.LiveHelpers do
   import Phoenix.LiveView.Helpers
 
   def slider_checkbox(assigns) do

@@ -10,7 +10,7 @@ defmodule Meeple.Board do
     :ok = Tableau.create(name)
     Tableau.pawns() |> Enum.each(&Territory.set_pawn(&1))
     :ok = FogOfWar.create(name)
-    Plan.clear()
+    clear_plan()
   end
 
   def map_exists?() do
@@ -29,5 +29,13 @@ defmodule Meeple.Board do
 
   def add_action(action) do
     Plan.add_action(action)
+  end
+
+  def clear_plan() do
+    Plan.clear()
+  end
+
+  def next_hour() do
+    Plan.tick()
   end
 end
