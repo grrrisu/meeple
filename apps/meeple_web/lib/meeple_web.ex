@@ -47,7 +47,6 @@ defmodule MeepleWeb do
       use Phoenix.LiveView,
         layout: {MeepleWeb.LayoutView, "live.html"}
 
-      import ThundermoonWeb.LiveHelpers
       unquote(view_helpers())
     end
   end
@@ -55,6 +54,14 @@ defmodule MeepleWeb do
   def live_component do
     quote do
       use Phoenix.LiveComponent
+
+      unquote(view_helpers())
+    end
+  end
+
+  def component do
+    quote do
+      use Phoenix.Component
 
       unquote(view_helpers())
     end
@@ -88,6 +95,7 @@ defmodule MeepleWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
+      import MeepleWeb.LiveHelpers
       import MeepleWeb.ErrorHelpers
       import MeepleWeb.Gettext
       alias MeepleWeb.Router.Helpers, as: Routes

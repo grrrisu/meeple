@@ -4,7 +4,7 @@ defmodule MeepleWeb.BoardLive.Index do
   require Logger
 
   alias Meeple.Board
-  alias MeepleWeb.BoardLive.{Map, Plan}
+  alias MeepleWeb.BoardLive.{AdminToolbar, Map, Plan}
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: subscribe()
@@ -41,7 +41,7 @@ defmodule MeepleWeb.BoardLive.Index do
     <div class="board">
       <div class="board-header">
         <h1>The Board</h1>
-        <.admin_view_switch fog_of_war={@fog_of_war} />
+        <AdminToolbar.render fog_of_war={@fog_of_war} />
       </div>
       <div class="board-menu">
         <a href="/">&lt; Back</a>
@@ -72,18 +72,6 @@ defmodule MeepleWeb.BoardLive.Index do
     """
   end
 
-  def admin_view_switch(assigns) do
-    ~H"""
-    <div class="grid justify-items-end">
-      <div style="width: 160px">
-        <form id="form-admin-view" phx-change="toggle-admin-view">
-          <.slider_checkbox label="Fog of War" checked={@fog_of_war} />
-        </form>
-      </div>
-    </div>
-    """
-  end
-
   def handle_event("toggle-admin-view", %{"slider-value" => "on"}, socket) do
     Logger.info("slider value: on")
 
@@ -96,6 +84,18 @@ defmodule MeepleWeb.BoardLive.Index do
 
     {:noreply,
      socket |> push_event("map_changed", %{fog_of_war: false}) |> assign(fog_of_war: false)}
+  end
+
+  def handle_event("clear-plan", _params, socket) do
+    Logger.info("claer-plan")
+    :ok = Board.clear_plan()
+    {:noreply, socket}
+  end
+
+  def handle_event("next-hour", _params, socket) do
+    Logger.info("claer-plan")
+    :ok = Board.next_hour()
+    {:noreply, socket}
   end
 
   def handle_info({:field_discovered, %{x: _x, y: _y}}, socket) do
