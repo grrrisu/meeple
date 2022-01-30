@@ -78,7 +78,7 @@ defmodule Meeple.PlanTest do
     assert %{actions: [], total_points: 0} = plan
   end
 
-  test "add inc done when action is not yet done", %{pid: pid, action: action} do
+  test "increase done when action is not yet done", %{pid: pid, action: action} do
     action = %Action{action | y: 1}
     :ok = Plan.add_action(action, pid)
     assert_receive({:plan_updated})
@@ -88,13 +88,13 @@ defmodule Meeple.PlanTest do
     assert %{done: 1, points: 4} = plan.actions |> List.first()
   end
 
-  test "remove action from queue when it's done", %{pid: pid, action: action} do
+  test "keep action in queue when it's done", %{pid: pid, action: action} do
     action = %Action{action | name: :move, points: 3, done: 2}
     :ok = Plan.add_action(action, pid)
     assert_receive({:plan_updated})
     :ok = Plan.tick(pid)
     assert_receive({:plan_updated})
     plan = Plan.get(pid)
-    assert Enum.empty?(plan.actions)
+    assert %{done: 3, points: 3} = plan.actions |> List.first()
   end
 end
