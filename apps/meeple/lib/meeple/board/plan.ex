@@ -3,6 +3,8 @@ defmodule Meeple.Plan do
 
   require Logger
 
+  alias Meeple.{Action, Pawn}
+
   @type points :: integer
   @type done :: integer
   @type name :: atom
@@ -37,7 +39,7 @@ defmodule Meeple.Plan do
   end
 
   @spec add_action(action, atom | pid | {atom, any} | {:via, atom, any}) :: any
-  def add_action(action, pid \\ __MODULE__) do
+  def add_action(%Action{} = action, pid \\ __MODULE__) do
     Agent.update(pid, fn state ->
       state = may_add_move_action(state, action)
       state = update_state(state, action)
@@ -47,8 +49,8 @@ defmodule Meeple.Plan do
     end)
   end
 
-  def may_add_move_action(state, %{name: :move}), do: state
-  def may_add_move_action(state, %{pawn: %{x: x, y: y}, x: x, y: y}), do: state
+  def may_add_move_action(state, %Action{name: :move}), do: state
+  def may_add_move_action(state, %{pawn: %Pawn{x: x, y: y}, x: x, y: y}), do: state
   def may_add_move_action(state, action), do: update_state(state, move_action(action))
 
   # @spec update_state(map, action) :: map
@@ -59,10 +61,10 @@ defmodule Meeple.Plan do
   end
 
   @move_costs 3
-  def move_action(%{pawn: pawn, x: x, y: y}) do
+  def move_action(%Action{pawn: %Pawn{} = pawn, x: x, y: y}) do
     # points = (abs(pawn.x - x) + abs(pawn.y - y)) / @move_costs # wheater and pawn.skills and ...
     points = ((abs(pawn.x - x) + abs(pawn.y - y)) / @move_costs) |> Float.ceil() |> trunc()
-    %{name: :move, pawn: pawn, x: x, y: y, done: 0, points: points}
+    %Action{name: :move, pawn: pawn, x: x, y: y, points: points}
   end
 
   def tick(pid \\ __MODULE__) do
@@ -76,7 +78,7 @@ defmodule Meeple.Plan do
 
   def inc_action(%{actions: actions} = state) do
     {{:value, action}, actions} = :queue.out(actions)
-    action = %{action | done: action.done + 1}
+    action = %Action{action | done: action.done + 1}
 
     case action.done == action.points do
       true ->
@@ -107,7 +109,7 @@ defmodule Meeple.Plan do
 
   # --- actions ---
 
-  def action_finished(%{name: :move, pawn: _pawn, x: _x, y: _y}) do
+  def action_finished(%Action{name: :move, pawn: _pawn, x: _x, y: _y}) do
     Logger.info("move action finished")
     # events:
     # plan: [pawn_moved, field_discovered/updated, may_trigger_danger_event]
@@ -118,7 +120,7 @@ defmodule Meeple.Plan do
     # broadcast_field_discovered(x, y)
   end
 
-  def action_finished(%{name: :discover, x: x, y: y}) do
+  def action_finished(%Action{name: :discover, x: x, y: y}) do
     Logger.info("discover action finished")
     # events:
     # plan: [field_discovered, yellow_karma_received, execution_stopped]
