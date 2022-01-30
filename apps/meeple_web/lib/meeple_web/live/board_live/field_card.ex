@@ -139,7 +139,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
       Path costs: <%= path_costs %>
       </p>
       Actions available:<br/>
-      <.card_close_button text="Discover (4AP)" click={click} />
+      <.card_close_button text="Discover" click={click} />
     </div>
     """
   end

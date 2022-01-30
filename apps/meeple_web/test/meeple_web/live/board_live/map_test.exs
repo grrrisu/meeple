@@ -44,7 +44,7 @@ defmodule MeepleWeb.BoardLive.MapTest do
 
     view
     |> element("#form-admin-view")
-    |> render_change(%{}) =~ "foobar"
+    |> render_change(%{})
 
     assert view |> element("#field-0-3") |> render() =~ "planes.svg"
 
