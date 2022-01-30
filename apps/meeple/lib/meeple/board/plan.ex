@@ -25,12 +25,15 @@ defmodule Meeple.Plan do
   end
 
   defp initial_state() do
-    %{actions: :queue.new(), total_points: 0}
+    %{planned: :queue.new(), done: :queue.new(), total_points: 0}
   end
 
   def get(pid \\ __MODULE__) do
-    Agent.get(pid, fn %{actions: actions} = state ->
-      %{state | actions: :queue.to_list(actions)}
+    Agent.get(pid, fn %{planned: planned, done: done} = state ->
+      %{
+        actions: :queue.to_list(done) ++ :queue.to_list(planned),
+        total_points: state.total_points
+      }
     end)
   end
 
@@ -42,7 +45,7 @@ defmodule Meeple.Plan do
   def add_action(%Action{} = action, pid \\ __MODULE__) do
     Agent.update(pid, fn state ->
       state = may_add_move_action(state, action)
-      state = update_state(state, action)
+      state = add_to_planned(state, action)
       # temp
       broadcast_plan_updated()
       state
@@ -51,13 +54,13 @@ defmodule Meeple.Plan do
 
   def may_add_move_action(state, %Action{name: :move}), do: state
   def may_add_move_action(state, %{pawn: %Pawn{x: x, y: y}, x: x, y: y}), do: state
-  def may_add_move_action(state, action), do: update_state(state, move_action(action))
+  def may_add_move_action(state, action), do: add_to_planned(state, move_action(action))
 
-  # @spec update_state(map, action) :: map
-  def update_state(state, action) do
-    actions = :queue.in(action, state.actions)
+  # @spec add_to_planned(map, action) :: map
+  def add_to_planned(state, action) do
+    actions = :queue.in(action, state.planned)
     total_points = action.points + state.total_points
-    %{actions: actions, total_points: total_points}
+    %{state | planned: actions, total_points: total_points}
   end
 
   @move_costs 3
@@ -68,7 +71,7 @@ defmodule Meeple.Plan do
   end
 
   def tick(pid \\ __MODULE__) do
-    Agent.cast(pid, fn %{actions: actions} = state ->
+    Agent.cast(pid, fn %{planned: actions} = state ->
       case :queue.is_empty(actions) do
         false -> inc_action(state)
         true -> state
@@ -76,21 +79,21 @@ defmodule Meeple.Plan do
     end)
   end
 
-  def inc_action(%{actions: actions} = state) do
-    {{:value, action}, actions} = :queue.out(actions)
+  def inc_action(%{planned: planned, done: done} = state) do
+    {{:value, action}, planned} = :queue.out(planned)
     action = %Action{action | done: action.done + 1}
 
     case action.done == action.points do
       true ->
         action_finished(action)
         broadcast_plan_updated()
-        %{state | actions: actions}
+        %{state | planned: planned, done: :queue.in(action, done)}
 
       false ->
         # events:
         # plan: [plan_updated, execution_finished]
         broadcast_plan_updated()
-        %{state | actions: :queue.in_r(action, actions)}
+        %{state | planned: :queue.in_r(action, planned)}
     end
   end
 

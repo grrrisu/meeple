@@ -47,7 +47,7 @@ defmodule MeepleWeb.BoardLive.Plan do
       <%= if @hour == @index do %>
         <img style={"width: 25px; top: 10px; left: #{@index *90 + 30}px"} class="absolute" src={"/images/ui/sun_symbol.svg"} />
       <% end %>
-      <img style={"width: 90px; top: -10px; left: #{@index *90}px"} class="absolute" src={"/images/ui/action_#{@action.name}.svg"} />
+      <img style={"width: 90px; top: 0; left: #{@index *90}px"} class="absolute" src={"/images/ui/action_#{@action.name}.svg"} />
       <%= if @action.points - @action.done > 0 do %>
         <img style={"width: 25px; top: 110px; left: #{@index *90 + 30}px"} class="absolute" src={"/images/ui/action_points_#{@action.points - @action.done}.svg"} />
       <% end %>
