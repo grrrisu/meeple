@@ -1,10 +1,12 @@
 defmodule Meeple.Territory.Test do
   alias Sim.Grid
 
+  alias Meeple.Pawn
+
   def headquarter(), do: {1, 1}
 
   def pawns() do
-    [%{id: 1, x: 1, y: 1, action_points: 12, planned: 0, executed: 0}]
+    [%Pawn{id: 1, x: 1, y: 1}]
   end
 
   def inventory() do
