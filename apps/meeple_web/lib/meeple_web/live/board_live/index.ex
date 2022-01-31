@@ -47,7 +47,6 @@ defmodule MeepleWeb.BoardLive.Index do
         <a href="/">&lt; Back</a>
       </div>
       <div class="board-map border-8 border-gray-900 bg-steelblue-400">
-        <div>Sunny</div>
         <.live_component module={Map} id="map" fog_of_war={@fog_of_war} />
         <div class="mx-16 py-3 grid justify-start grid-cols-10">
           <div class="bg-steelblue-300 mx-auto p-2 rounded-lg">
