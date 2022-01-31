@@ -32,4 +32,9 @@ defmodule MeepleWeb.BoardLive.PlanTest do
            |> element("#plan")
            |> render() =~ "action_discover.svg"
   end
+
+  test "hour timeline", %{conn: conn} do
+    {:ok, view, _html} = live(conn, "/board")
+    assert view |> element("#plan-hour-timeline") |> render() =~ "sun_symbol.svg"
+  end
 end
