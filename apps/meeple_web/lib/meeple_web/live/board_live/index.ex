@@ -100,12 +100,7 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_info({:field_discovered, %{x: _x, y: _y}}, socket) do
     Logger.info("field discovered")
-
-    send_update(Map,
-      id: "map",
-      fog_of_war: socket.assigns.fog_of_war
-    )
-
+    update_map(socket)
     {:noreply, socket}
   end
 
@@ -113,6 +108,19 @@ defmodule MeepleWeb.BoardLive.Index do
     Logger.info("plan updated")
     send_update(Plan, id: "plan")
     {:noreply, socket}
+  end
+
+  def handle_info({:hour_updated}, socket) do
+    Logger.info("hour updated")
+    update_map(socket)
+    {:noreply, socket}
+  end
+
+  defp update_map(socket) do
+    send_update(Map,
+      id: "map",
+      fog_of_war: socket.assigns.fog_of_war
+    )
   end
 
   defp subscribe() do

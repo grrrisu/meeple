@@ -35,7 +35,12 @@ defmodule Meeple.Board do
     Plan.clear()
   end
 
+  def get_hour() do
+    Tableau.hour()
+  end
+
   def next_hour() do
     Plan.tick()
+    Tableau.inc_hour()
   end
 end
