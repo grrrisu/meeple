@@ -105,13 +105,14 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_info({:plan_updated}, socket) do
     Logger.info("plan updated")
-    send_update(Plan, id: "plan")
+    update_plan(socket)
     {:noreply, socket}
   end
 
   def handle_info({:hour_updated}, socket) do
     Logger.info("hour updated")
     update_map(socket)
+    update_plan(socket)
     {:noreply, socket}
   end
 
@@ -120,6 +121,10 @@ defmodule MeepleWeb.BoardLive.Index do
       id: "map",
       fog_of_war: socket.assigns.fog_of_war
     )
+  end
+
+  defp update_plan(_socket) do
+    send_update(Plan, id: "plan")
   end
 
   defp subscribe() do

@@ -3,7 +3,7 @@ defmodule MeepleWeb.BoardLive.Map do
   require Logger
 
   alias Meeple.Board
-  alias MeepleWeb.BoardLive.{Field, FieldCard}
+  alias MeepleWeb.BoardLive.{Field, FieldCard, HourTimeline}
 
   def update(assigns, socket) do
     {width, height} = Board.map_dimensions()
@@ -58,39 +58,9 @@ defmodule MeepleWeb.BoardLive.Map do
       <div class="place-self-center">
         <i class="las la-caret-up la-3x"></i>
       </div>
-      <.timeline hour={@hour}/>
+      <HourTimeline.map hour={@hour}/>
     </div>
     <div></div>
-    """
-  end
-
-  def timeline(assigns) do
-    bottom =
-      cond do
-        assigns.hour == 0 || assigns.hour == 11 -> -35
-        assigns.hour == 1 || assigns.hour == 10 -> -15
-        assigns.hour == 2 || assigns.hour == 9 -> 0
-        assigns.hour == 3 || assigns.hour == 8 -> 5
-        assigns.hour == 4 || assigns.hour == 7 -> 15
-        assigns.hour == 5 || assigns.hour == 6 -> 25
-        true -> 0
-      end
-
-    assigns = assign(assigns, bottom: bottom)
-
-    ~H"""
-    <div id="map-hour-timeline" class="w-full h-4/5 overflow-hidden relative grid" style="grid-template-columns: repeat(12, 1fr)">
-      <div class="absolute transition-all duration-[1000ms]" style={"bottom: #{@bottom}%; left: #{@hour/12 * 100}%"}>
-        <img style="margin-left: 8px; width: 30px" src="/images/ui/sun_symbol.svg" />
-      </div>
-      <%= for i <- 0..11 do %>
-        <div class="mx-0.5 py-2 text-center text-steelblue-500 bg-steelblue-300 rounded-xl shadow-inner">
-          <%= if i != @hour do %>
-            <span class="py-3"><%= i + 1 %></span>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
     """
   end
 
