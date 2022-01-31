@@ -79,15 +79,18 @@ defmodule Meeple.FogOfWar do
   end
 
   defp update_field_from_territory(x, y, grid, visability, territory) do
-    field =
-      fetch_field_from_territory(x, y, visability, territory)
-      |> Map.merge(%{visability: visability})
+    field = fetch_field_from_territory(x, y, visability, territory)
 
     grid = Grid.put(grid, x, y, field)
     {field, grid}
   end
 
   defp fetch_field_from_territory(x, y, visability, territory) do
+    get_field_from_territory(x, y, visability, territory)
+    |> Map.merge(%{visability: visability})
+  end
+
+  defp get_field_from_territory(x, y, visability, territory) do
     case visability do
       @full_visability -> Territory.field(x, y, territory)
       @only_vegetation -> %{vegetation: Territory.field(x, y, territory) |> Map.get(:vegetation)}
