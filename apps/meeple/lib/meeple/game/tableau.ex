@@ -36,7 +36,20 @@ defmodule Meeple.Tableau do
   end
 
   def pawns(pid \\ __MODULE__) do
-    Agent.get(pid, fn %{pawns: pawns} -> pawns end)
+    Agent.get(pid, fn %{pawns: pawns} -> Enum.sort(pawns, &(&1.id >= &2.id)) end)
+  end
+
+  def get_pawn(id, pid \\ __MODULE__) do
+    Agent.get(pid, fn %{pawns: pawns} ->
+      Enum.find(pawns, &(&1.id == id)) || {:error, "pawn not found"}
+    end)
+  end
+
+  def update_pawn(pawn, pid \\ __MODULE__) do
+    Agent.update(pid, fn %{pawns: pawns} = state ->
+      pawns = Enum.reject(pawns, &(&1.id == pawn.id))
+      %{state | pawns: [pawn | pawns]}
+    end)
   end
 
   defp set_headquarter("one"), do: One.headquarter()

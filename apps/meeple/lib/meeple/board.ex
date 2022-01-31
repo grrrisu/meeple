@@ -27,6 +27,19 @@ defmodule Meeple.Board do
   def get_field(x, y, true), do: FogOfWar.field(x, y)
   def get_field(x, y, false), do: Territory.field(x, y)
 
+  def discover_field(x, y), do: FogOfWar.discover(x, y)
+
+  def update_fog_of_war(), do: FogOfWar.update_grid()
+
+  def get_pawn(id) do
+    Tableau.get_pawn(id)
+  end
+
+  def move_pawn(pawn, x, y) do
+    pawn = Territory.move_pawn(pawn, x, y)
+    Tableau.update_pawn(pawn)
+  end
+
   def add_action(action) do
     Plan.add_action(action)
   end

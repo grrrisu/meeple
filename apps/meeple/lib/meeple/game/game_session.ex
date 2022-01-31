@@ -1,7 +1,9 @@
 defmodule Meeple.GameSession do
   use GenServer
 
-  alias Meeple.{FogOfWar, Plan}
+  require Logger
+
+  alias Meeple.{Board, FogOfWar, Plan}
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: opts[:name] || __MODULE__)
@@ -9,7 +11,34 @@ defmodule Meeple.GameSession do
 
   @impl true
   def init(opts) do
+    subscribe()
     state = %{fog_of_war: opts[:fog_of_war] || FogOfWar, plan: opts[:plan] || Plan}
     {:ok, state}
+  end
+
+  @impl true
+  def handle_info({:grid_changed}, state) do
+    Logger.info("grid changed")
+    Board.update_fog_of_war()
+    broadcast_grid_updated()
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info(_ignore, state) do
+    Logger.info("ignore")
+    {:noreply, state}
+  end
+
+  defp subscribe() do
+    :ok = Phoenix.PubSub.subscribe(Meeple.PubSub, "GameSession")
+  end
+
+  defp broadcast_grid_updated() do
+    broadcast_event({:grid_updated})
+  end
+
+  defp broadcast_event(event) do
+    :ok = Phoenix.PubSub.broadcast(Meeple.PubSub, "GameSession", event)
   end
 end

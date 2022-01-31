@@ -30,7 +30,7 @@ defmodule Meeple.FogOfWar do
   def create(name, pid \\ __MODULE__) do
     Agent.get_and_update(pid, fn state ->
       fog = create_fog(name)
-      grid = update_grid(fog, state.territory)
+      grid = sync_grid(fog, state.territory)
       {:ok, %{state | fog: fog, grid: grid}}
     end)
   end
@@ -41,6 +41,13 @@ defmodule Meeple.FogOfWar do
 
   def field(x, y, pid \\ __MODULE__) do
     Agent.get(pid, &get_field(x, y, &1))
+  end
+
+  def update_grid(pid \\ __MODULE__) do
+    Agent.update(pid, fn %{territory: territory, fog: fog} = state ->
+      grid = sync_grid(fog, territory)
+      %{state | grid: grid}
+    end)
   end
 
   def update_field(x, y, pid \\ __MODULE__) do
@@ -72,7 +79,7 @@ defmodule Meeple.FogOfWar do
   defp get_field(_x, _y, %{grid: nil}), do: raise("grid has not yet been created")
   defp get_field(x, y, %{grid: grid}), do: Grid.get(grid, x, y)
 
-  defp update_grid(fog, territory) do
+  defp sync_grid(fog, territory) do
     Grid.create(Grid.width(fog), Grid.height(fog), fn x, y ->
       fetch_field_from_territory(x, y, Grid.get(fog, x, y), territory)
     end)

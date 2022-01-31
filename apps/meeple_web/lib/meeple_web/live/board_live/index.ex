@@ -103,6 +103,12 @@ defmodule MeepleWeb.BoardLive.Index do
     {:noreply, socket}
   end
 
+  def handle_info({:grid_updated}, socket) do
+    Logger.info("grid updated")
+    update_map(socket)
+    {:noreply, socket}
+  end
+
   def handle_info({:plan_updated}, socket) do
     Logger.info("plan updated")
     update_plan(socket)
@@ -113,6 +119,11 @@ defmodule MeepleWeb.BoardLive.Index do
     Logger.info("hour updated")
     update_map(socket)
     update_plan(socket)
+    {:noreply, socket}
+  end
+
+  def handle_info(_ignore, socket) do
+    Logger.info("ignore")
     {:noreply, socket}
   end
 
