@@ -60,18 +60,6 @@ defmodule Meeple.PlanTest do
     assert [%{name: :move}] = plan.actions
   end
 
-  test "calculate move action for distance 3", %{action: action} do
-    action = %Action{action | y: 4}
-    move = Plan.move_action(action)
-    assert %{name: :move, x: 1, y: 4, points: 1} = move
-  end
-
-  test "calculate move action for distance 4", %{action: action} do
-    action = %Action{action | x: 2, y: 4}
-    move = Plan.move_action(action)
-    assert %{name: :move, x: 2, y: 4, points: 2} = move
-  end
-
   test "do nothing if action queue is empty", %{pid: pid} do
     :ok = Plan.tick(pid)
     plan = Plan.get(pid)
