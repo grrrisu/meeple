@@ -28,7 +28,7 @@ defmodule MeepleWeb.BoardLive.Map do
     ~H"""
     <div id="map"
       x-data="{showFieldCard: false}"
-      class="board-map grid place-items-center text-gray-500"
+      class="mt-4 board-map grid place-items-center text-gray-500"
       style="grid-template-columns: 70px auto 70px; grid-template-rows: 40px auto 40px;">
       <.top_map hour={@hour}/>
       <div class="justify-self-end"><i class="las la-caret-left la-3x "></i></div>
@@ -51,9 +51,11 @@ defmodule MeepleWeb.BoardLive.Map do
   def top_map(assigns) do
     ~H"""
     <div></div>
-    <div class="w-full grid place-items-stretch" style="grid-template-columns: 1fr 50px 1fr">
+    <div class="w-full h-12 mb-2 grid place-items-stretch items-center" style="grid-template-columns: 1fr 1fr 1fr 75px 3fr">
+      <div class="text-white">Spring</div>
+      <div class="text-white">Day 1</div>
       <div class="text-white">Sunny</div>
-      <div>
+      <div class="place-self-center">
         <i class="las la-caret-up la-3x"></i>
       </div>
       <.timeline hour={@hour}/>
@@ -82,7 +84,7 @@ defmodule MeepleWeb.BoardLive.Map do
         <img style="margin-left: 8px; width: 30px" src="/images/ui/sun_symbol.svg" />
       </div>
       <%= for i <- 0..11 do %>
-        <div class="mx-0.5 py-2 text-center text-steelblue-500 bg-steelblue-300 rounded-xl">
+        <div class="mx-0.5 py-2 text-center text-steelblue-500 bg-steelblue-300 rounded-xl shadow-inner">
           <%= if i != @hour do %>
             <span class="py-3"><%= i + 1 %></span>
           <% end %>
