@@ -51,4 +51,9 @@ defmodule MeepleWeb.BoardLive.MapTest do
     view |> element("#form-admin-view") |> render_change(%{"slider-value" => "on"})
     refute view |> element("#field-0-3") |> render() =~ "planes.svg"
   end
+
+  test "hour timeline", %{conn: conn} do
+    {:ok, view, _html} = live(conn, "/board")
+    assert view |> element("#map-hour-timeline") |> render() =~ "sun_symbol.svg"
+  end
 end
