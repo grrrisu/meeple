@@ -54,7 +54,7 @@ defmodule MeepleWeb.BoardLive.Field do
     """
   end
 
-  def pawns(%{pawns: pawns} = assigns) when is_list(pawns) do
+  def pawns(%{pawns: [_] = pawns} = assigns) when is_list(pawns) do
     ~H"""
     <div class="absolute m-3" style="width: 25px; height: 25px">
       <img src="/images/ui/human_token.svg" class="w-full"/>

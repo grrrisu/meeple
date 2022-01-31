@@ -4,7 +4,7 @@ defmodule Meeple.Action do
 
   require Logger
 
-  alias Meeple.{Action, Pawn}
+  alias Meeple.{Action, Board, Pawn}
 
   @move_costs 3
   def build_move(%Action{pawn: %Pawn{} = pawn, x: x, y: y}) do
@@ -13,15 +13,21 @@ defmodule Meeple.Action do
     %Action{name: :move, pawn: pawn, x: x, y: y, points: points}
   end
 
-  def execute(%Action{name: :move, pawn: _pawn, x: _x, y: _y}) do
+  def execute(%Action{name: :move, pawn: pawn, x: x, y: y}) do
     Logger.info("move action finished")
-    # events:
-    # plan: [pawn_moved, field_discovered/updated, may_trigger_danger_event]
-    # fog_of_war: [fog_of_war_updated], ...
-    # Meeple.Territory.move_pawn(from: {pawn.x, pawn.y}, to: x, y)
-    # Meeple.Pawn.move(pawn, x, y)
-    # Meeple.FogOfWar.discover(x, y) # update fog_of_war by passing by expect it is has not yet been discoverd
-    # broadcast_field_discovered(x, y)
+
+    pawn = Board.get_pawn(pawn.id)
+    :ok = Board.move_pawn(pawn, x, y)
+
+    # update field information
+    field = Board.get_field(x, y, true)
+
+    if field.visability > 0 do
+      :ok = Board.discover_field(x, y)
+    end
+
+    broadcast_grid_changed()
+    # may trigger a danger event
   end
 
   def execute(%Action{name: :discover, x: x, y: y}) do
@@ -29,13 +35,17 @@ defmodule Meeple.Action do
     # events:
     # plan: [field_discovered, yellow_karma_received, execution_stopped]
     # fog_of_war: [fog_of_war_updated], xp_pool: [xp_pool_updated], game_session: [clock_stopped]
-    Meeple.FogOfWar.discover(x, y)
+    :ok = Board.discover_field(x, y)
     # temp
     broadcast_field_discovered(x, y)
   end
 
   defp broadcast_field_discovered(x, y) do
     broadcast_event({:field_discovered, %{x: x, y: y}})
+  end
+
+  defp broadcast_grid_changed() do
+    broadcast_event({:grid_changed})
   end
 
   defp broadcast_event(event) do
