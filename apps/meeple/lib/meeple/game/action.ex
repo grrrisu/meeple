@@ -40,6 +40,10 @@ defmodule Meeple.Action do
     broadcast_field_discovered(x, y)
   end
 
+  def execute(%Action{name: :test}) do
+    # this is just for testing and does nothing
+  end
+
   defp broadcast_field_discovered(x, y) do
     broadcast_event({:field_discovered, %{x: x, y: y}})
   end

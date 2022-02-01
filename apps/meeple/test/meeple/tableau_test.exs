@@ -19,9 +19,9 @@ defmodule Meeple.TebleauTest do
     assert %Pawn{id: 1} = pawn
   end
 
-  test "get error if pawn could not be found", %{pid: pid} do
+  test "return error if pawn could not be found", %{pid: pid} do
     pawn = Tableau.get_pawn(4, pid)
-    assert {:error, msg} = pawn
+    assert {:error, _msg} = pawn
   end
 
   test "update pawn", %{pid: pid} do
