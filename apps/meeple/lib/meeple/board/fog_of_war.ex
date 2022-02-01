@@ -99,9 +99,24 @@ defmodule Meeple.FogOfWar do
 
   defp get_field_from_territory(x, y, visability, territory) do
     case visability do
-      @full_visability -> Territory.field(x, y, territory)
-      @only_vegetation -> %{vegetation: Territory.field(x, y, territory) |> Map.get(:vegetation)}
-      @terra_incognita -> %{}
+      @full_visability ->
+        Territory.field(x, y, territory)
+
+      @only_vegetation ->
+        Territory.field(x, y, territory) |> extract_attributes([:pawns, :vegetation])
+
+      @terra_incognita ->
+        Territory.field(x, y, territory) |> extract_attributes([:pawns])
     end
+  end
+
+  def extract_attributes(field, attributes) do
+    Enum.reduce(attributes, %{}, fn attr, f ->
+      if Map.has_key?(field, attr) do
+        Map.put(f, attr, field[attr])
+      else
+        f
+      end
+    end)
   end
 end
