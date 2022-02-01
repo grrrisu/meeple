@@ -55,7 +55,7 @@ defmodule Meeple.Plan do
     end)
   end
 
-  def may_add_move_action(state, %Action{name: :move}), do: state
+  def may_add_move_action(state, %Action{name: action}) when action in [:test, :move], do: state
   def may_add_move_action(state, %{pawn: %Pawn{x: x, y: y}, x: x, y: y}), do: state
   def may_add_move_action(state, action), do: add_to_planned(state, Action.build_move(action))
 

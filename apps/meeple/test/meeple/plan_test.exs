@@ -77,7 +77,7 @@ defmodule Meeple.PlanTest do
   end
 
   test "keep action in queue when it's done", %{pid: pid, action: action} do
-    action = %Action{action | name: :move, points: 3, done: 2}
+    action = %Action{action | name: :test, points: 3, done: 2}
     :ok = Plan.add_action(action, pid)
     assert_receive({:plan_updated})
     :ok = Plan.tick(pid)
