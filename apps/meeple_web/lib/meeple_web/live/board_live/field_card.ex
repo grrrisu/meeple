@@ -17,7 +17,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
 
   def render(assigns) do
     ~H"""
-    <div id="field-card">
+    <div id="field-card" class="z-10">
       <.card_border x={@x} y={@y}>
         <div class="mt-5" style="height: 392px">
           <.card_title title={@field[:building] || @field[:vegetation] || :"Terra Incognita"} />

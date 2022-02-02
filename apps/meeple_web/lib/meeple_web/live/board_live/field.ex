@@ -32,7 +32,6 @@ defmodule MeepleWeb.BoardLive.Field do
       @click="showFieldCard = true"
       phx-click={fade_in(@x, @y, @target)}
       title={field_title(@field)}>
-        <.pawns pawns={@field[:pawns]} />
         <.background field={@field} />
     </div>
     """
@@ -53,16 +52,6 @@ defmodule MeepleWeb.BoardLive.Field do
       <image src={"/images/fields/#{@image}"} class="w-full"/>
     """
   end
-
-  def pawns(%{pawns: [_] = pawns} = assigns) when is_list(pawns) do
-    ~H"""
-    <div class="absolute m-3" style="width: 25px; height: 25px">
-      <img src="/images/ui/human_token.svg" class="w-full"/>
-    </div>
-    """
-  end
-
-  def pawns(assigns), do: empty(assigns)
 
   def empty(assigns) do
     ~H"""
