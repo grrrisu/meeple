@@ -20,7 +20,7 @@ defmodule MeepleWeb.BoardLive.Index do
       assign(socket,
         fog_of_war: true,
         fields: get_fields(true),
-        pawns: [%{x: 7, y: 1}],
+        pawns: get_pawns(),
         hour: Board.get_hour()
       )
       |> assign_dimensions()
@@ -65,6 +65,7 @@ defmodule MeepleWeb.BoardLive.Index do
           width={@width}
           height={@height}
           pawns={@pawns}/>
+        <.map_pawns pawns={@pawns} width={@width} height={@height}/>
         <:bottom>
           <.map_bottom pawns={@pawns} />
         </:bottom>
@@ -116,7 +117,7 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_info({:grid_updated}, socket) do
     Logger.info("grid updated")
-    {:noreply, assign_fields(socket)}
+    {:noreply, socket |> assign_fields() |> assign(pawns: get_pawns())}
   end
 
   def handle_info({:plan_updated}, socket) do
@@ -154,6 +155,10 @@ defmodule MeepleWeb.BoardLive.Index do
 
   defp get_fields(fog_of_war) do
     Board.get_grid(fog_of_war)
+  end
+
+  defp get_pawns() do
+    Board.get_pawns()
   end
 
   defp assign_dimensions(socket) do

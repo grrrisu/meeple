@@ -31,6 +31,10 @@ defmodule Meeple.Board do
 
   def update_fog_of_war(), do: FogOfWar.update_grid()
 
+  def get_pawns() do
+    Tableau.pawns()
+  end
+
   def get_pawn(id) do
     Tableau.get_pawn(id)
   end
