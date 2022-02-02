@@ -22,13 +22,15 @@ defmodule MeepleWeb.BoardLive.HourTimeline do
       </div>
       <%= for i <- 0..11 do %>
         <div class="mx-0.5 py-2 text-center text-steelblue-500 bg-steelblue-300 rounded-xl shadow-inner">
-          <%= if i != @hour do %>
-            <span class="py-3"><%= i + 1 %></span>
-          <% end %>
+          <span class={"py-3 transition-opacity duration-[1000ms] #{hour_digit(@hour, i)}"}><%= i + 1 %></span>
         </div>
       <% end %>
     </div>
     """
+  end
+
+  defp hour_digit(hour, digit) do
+    if digit == hour, do: "opacity-0", else: "opacity-100"
   end
 
   def plan(assigns) do
