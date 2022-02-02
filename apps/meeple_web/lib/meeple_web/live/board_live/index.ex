@@ -6,7 +6,7 @@ defmodule MeepleWeb.BoardLive.Index do
   import MeepleWeb.BoardLive.Sections
 
   alias Meeple.Board
-  alias MeepleWeb.BoardLive.{AdminToolbar, Map, Plan}
+  alias MeepleWeb.BoardLive.{Map, Plan}
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: subscribe()
@@ -14,8 +14,6 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_params(params, session, socket) do
-    {width, height} = Board.map_dimensions()
-
     socket =
       assign(socket,
         fog_of_war: true,

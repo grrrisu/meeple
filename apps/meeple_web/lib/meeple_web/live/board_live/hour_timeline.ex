@@ -17,7 +17,7 @@ defmodule MeepleWeb.BoardLive.HourTimeline do
 
     ~H"""
     <div id="map-hour-timeline" class="w-full h-4/5 overflow-hidden relative grid" style="grid-template-columns: repeat(12, 1fr)">
-      <div class="absolute transition-all duration-[1000ms]" style={"bottom: #{@bottom}%; left: #{@hour/12 * 100}%"}>
+      <div class="absolute transition-position duration-[1000ms]" style={"bottom: #{@bottom}%; left: #{@hour/12 * 100}%"}>
         <img style="margin-left: 8px; width: 30px" src="/images/ui/sun_symbol.svg" />
       </div>
       <%= for i <- 0..11 do %>
@@ -37,8 +37,8 @@ defmodule MeepleWeb.BoardLive.HourTimeline do
 
     ~H"""
     <div id="plan-hour-timeline" class="relative w-full mx-8">
-      <div class="absolute transition-all duration-[1000ms] overflow-hidden" style={"width: 25px; height: 25px; top: 10px; left: #{@hour/12 * 100}%"}>
-        <img class="absolute transition-all  duration-[1000ms]" style={"top: #{@top}px"} src={"/images/ui/sun_symbol.svg"} />
+      <div class="absolute transition-position duration-[1000ms] overflow-hidden" style={"width: 25px; height: 25px; top: 10px; left: #{@hour/12 * 100}%"}>
+        <img class="absolute transition-position  duration-[1000ms]" style={"top: #{@top}px"} src={"/images/ui/sun_symbol.svg"} />
       </div>
     </div>
     """
