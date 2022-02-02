@@ -3,6 +3,8 @@ defmodule MeepleWeb.BoardLive.Index do
 
   require Logger
 
+  import MeepleWeb.BoardLive.Sections
+
   alias Meeple.Board
   alias MeepleWeb.BoardLive.{AdminToolbar, Map, Plan}
 
@@ -12,7 +14,17 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_params(params, session, socket) do
-    socket = assign(socket, fog_of_war: true)
+    {width, height} = Board.map_dimensions()
+
+    socket =
+      assign(socket,
+        fog_of_war: true,
+        fields: get_fields(true),
+        pawns: [%{x: 7, y: 1}],
+        hour: Board.get_hour()
+      )
+      |> assign_dimensions()
+
     {:noreply, handle_action(socket.assigns.live_action, params, session, socket)}
   end
 
@@ -39,35 +51,25 @@ defmodule MeepleWeb.BoardLive.Index do
   def render(assigns) do
     ~H"""
     <div class="board">
-      <div class="board-header">
-        <h1>The Board</h1>
-        <AdminToolbar.render fog_of_war={@fog_of_war} />
-      </div>
-      <div class="board-menu">
-        <a href="/">&lt; Back</a>
-      </div>
-      <div class="board-map border-8 border-gray-900 bg-steelblue-400">
-        <.live_component module={Map} id="map" fog_of_war={@fog_of_war} />
-        <div class="mx-16 py-3 grid justify-start grid-cols-10">
-          <div class="bg-steelblue-300 mx-auto p-2 rounded-lg">
-            <div style="width: 40px; height: 40px">
-              <img src="/images/ui/human_symbol.svg" class="w-full"/>
-            </div>
-            <span class="text-sm text-copperfield-900 font-bold">5 / 12</span>
-          </div>
-          <div class="bg-steelblue-300 mx-auto p-2 rounded-lg">
-            <div style="width: 40px; height: 40px">
-              <img src="/images/ui/human_symbol2.svg" class="w-full"/>
-            </div>
-            <span class="text-sm text-copperfield-900 font-bold">10 / 12</span>
-          </div>
-          <div style="width: 50px; height: 50px">
-            <img src="/images/ui/human_token_dark.svg" class="w-full"/>
-          </div>
-        </div>
-      </div>
+      <.header />
+      <.nav />
+      <.admin_toolbar fog_of_war={@fog_of_war}/>
+      <.board_map>
+        <:top>
+          <.map_top hour={@hour}/>
+        </:top>
+        <.live_component module={Map} id="map" fields={@fields} width={@width} height={@height} pawns={@pawns}/>
+        <:bottom>
+          <.map_bottom pawns={@pawns} />
+        </:bottom>
+      </.board_map>
+      <.plan>
+        <.live_component module={Plan} id="plan" />
+      </.plan>
+      <.inventory/>
+      <.xp_pool />
+      <.technology />
     </div>
-    <.live_component module={Plan} id="plan" />
     """
   end
 
@@ -144,5 +146,14 @@ defmodule MeepleWeb.BoardLive.Index do
 
   defp create_territory(name) do
     Board.create(name)
+  end
+
+  defp get_fields(fog_of_war) do
+    Board.get_grid(fog_of_war)
+  end
+
+  defp assign_dimensions(socket) do
+    {width, height} = Board.map_dimensions()
+    assign(socket, width: width, height: height)
   end
 end
