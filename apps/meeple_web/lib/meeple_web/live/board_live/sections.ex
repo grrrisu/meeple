@@ -37,7 +37,9 @@ defmodule MeepleWeb.BoardLive.Sections do
         <%= render_slot(@top) %>
         <div></div>
         <div class="justify-self-end"><i class="las la-caret-left la-3x "></i></div>
+        <div x-data="{showFieldCard: false}">
           <%= render_slot(@inner_block) %>
+        </div>
         <div class="justify-self-start"><i class="las la-caret-right la-3x"></i></div>
         <%= render_slot(@bottom) %>
       </div>
@@ -63,7 +65,7 @@ defmodule MeepleWeb.BoardLive.Sections do
 
   def map_bottom(assigns) do
     ~H"""
-    <div style="grid-column: 1 / span 3">
+    <div class="mb-5" style="grid-column: 1 / span 3">
       <i class="las la-caret-down la-3x"></i>
     </div>
     """

@@ -18,8 +18,7 @@ defmodule MeepleWeb.BoardLive.Map do
 
   def render(assigns) do
     ~H"""
-    <div
-      x-data="{showFieldCard: false}"
+    <div id="map"
       class="grid place-content-center relative border-t border-l border-b-2 border-r-2 border-gray-900"
       style={css_grid_template(@width, @height)}>
       <%= for field <- @fields do %>
