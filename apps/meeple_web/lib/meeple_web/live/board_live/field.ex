@@ -9,10 +9,10 @@ defmodule MeepleWeb.BoardLive.Field do
 
   def fade_in(x, y, target) do
     JS.push("show", value: %{x: x, y: y}, target: target)
-    |> JS.show(
-      transition: {"ease-out duration-500", "opacity-25", "opacity-100"},
-      to: "#field-card"
-    )
+    # |> JS.show(
+    #   transition: {"ease-out duration-[2000ms]", "opacity-25", "opacity-100"},
+    #   to: "#field-card"
+    # )
   end
 
   def field_title(field) do
