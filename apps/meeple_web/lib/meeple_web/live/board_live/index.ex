@@ -58,7 +58,13 @@ defmodule MeepleWeb.BoardLive.Index do
         <:top>
           <.map_top hour={@hour}/>
         </:top>
-        <.live_component module={Map} id="map" fields={@fields} width={@width} height={@height} pawns={@pawns}/>
+        <.live_component module={Map}
+          id="map"
+          fog_of_war={@fog_of_war}
+          fields={@fields}
+          width={@width}
+          height={@height}
+          pawns={@pawns}/>
         <:bottom>
           <.map_bottom pawns={@pawns} />
         </:bottom>
@@ -77,38 +83,40 @@ defmodule MeepleWeb.BoardLive.Index do
     Logger.info("slider value: on")
 
     {:noreply,
-     socket |> push_event("map_changed", %{fog_of_war: true}) |> assign(fog_of_war: true)}
+     socket
+     |> push_event("map_changed", %{fog_of_war: true})
+     |> assign(fog_of_war: true, fields: get_fields(true))}
   end
 
   def handle_event("toggle-admin-view", _slider_off, socket) do
     Logger.info("slider value: OFF!")
 
     {:noreply,
-     socket |> push_event("map_changed", %{fog_of_war: false}) |> assign(fog_of_war: false)}
+     socket
+     |> push_event("map_changed", %{fog_of_war: false})
+     |> assign(fog_of_war: false, fields: get_fields(false))}
   end
 
   def handle_event("clear-plan", _params, socket) do
-    Logger.info("claer-plan")
+    Logger.info("clear-plan")
     :ok = Board.clear_plan()
     {:noreply, socket}
   end
 
   def handle_event("next-hour", _params, socket) do
-    Logger.info("claer-plan")
+    Logger.info("next-hour")
     :ok = Board.next_hour()
     {:noreply, socket}
   end
 
   def handle_info({:field_discovered, %{x: _x, y: _y}}, socket) do
     Logger.info("field discovered")
-    update_map(socket)
-    {:noreply, socket}
+    {:noreply, assign_fields(socket)}
   end
 
   def handle_info({:grid_updated}, socket) do
     Logger.info("grid updated")
-    update_map(socket)
-    {:noreply, socket}
+    {:noreply, assign_fields(socket)}
   end
 
   def handle_info({:plan_updated}, socket) do
@@ -119,9 +127,8 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_info({:hour_updated}, socket) do
     Logger.info("hour updated")
-    update_map(socket)
     update_plan(socket)
-    {:noreply, socket}
+    {:noreply, socket |> assign_fields() |> assign(hour: Board.get_hour())}
   end
 
   def handle_info(_ignore, socket) do
@@ -129,11 +136,8 @@ defmodule MeepleWeb.BoardLive.Index do
     {:noreply, socket}
   end
 
-  defp update_map(socket) do
-    send_update(Map,
-      id: "map",
-      fog_of_war: socket.assigns.fog_of_war
-    )
+  defp assign_fields(socket) do
+    assign(socket, fields: get_fields(socket.assigns.fog_of_war))
   end
 
   defp update_plan(_socket) do
