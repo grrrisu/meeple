@@ -26,31 +26,15 @@
 
 .board {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 70px 1fr 70px;
   grid-template-rows: auto;
   grid-template-areas:
     "header header header"
-    "menu menu menu"
+    "nav nav nav"
+    "admin admin admin"
     "map map map"
-    "plan-wall plan-wall plan-wall";
-}
-
-.board-header {
-  grid-area: header;
-}
-
-.board-menu {
-  grid-area: menu;
-}
-
-.board-map {
-  grid-area: map;
-}
-
-.board-pawns {
-  grid-area: pawns;
-}
-
-.board-location {
-  grid-area: location;
+    ". plan ."
+    ". inventory ."
+    ". xp-pool ."
+    ". technology .";
 }

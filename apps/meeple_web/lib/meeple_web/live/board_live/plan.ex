@@ -14,7 +14,7 @@ defmodule MeepleWeb.BoardLive.Plan do
 
   def render(assigns) do
     ~H"""
-    <div id="plan" class="plan-wall mt-8" style="margin-left: 80px; margin-right: 80px">
+    <div id="plan" class="plan-wall mt-8">
       <div class="relative">
         <HourTimeline.plan hour={@hour} />
         <%= for {action, index} <- Enum.with_index(@plan.actions) do %>
