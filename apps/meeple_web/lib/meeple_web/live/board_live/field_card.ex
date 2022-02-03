@@ -22,7 +22,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
         <div class="mt-5" style="height: 392px">
           <.card_title title={@field[:building] || @field[:vegetation] || :"Terra Incognita"} />
           <div class="my-2 mx-auto grid justify-center bg-steelbluex-100">
-            <image
+            <img
               src={"/images/fields/#{(@field[:building] && "homebase.svg") || vegetation_image(@field[:vegetation])}"}
               class="border border-steelblue-800"
               style="height: 240px"/>

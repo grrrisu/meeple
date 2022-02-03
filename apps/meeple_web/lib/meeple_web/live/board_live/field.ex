@@ -49,7 +49,7 @@ defmodule MeepleWeb.BoardLive.Field do
 
   def background_image(assigns) do
     ~H"""
-      <image src={"/images/fields/#{@image}"} class="w-full"/>
+      <img src={"/images/fields/#{@image}"} class="w-full"/>
     """
   end
 
