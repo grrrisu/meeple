@@ -16,7 +16,15 @@
 
 @layer components {
   .field {
-    @apply bg-gray-50 border-t border-l border-gray-900;
+    @apply bg-gray-50 border-t border-l border-gray-900 relative;
+  }
+
+  .field-img {
+    @apply w-full transition-opacity duration-[3000ms] opacity-100;
+  }
+
+  .field-empty {
+    @apply w-full opacity-0;
   }
 }
 
