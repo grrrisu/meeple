@@ -9,8 +9,16 @@
     @apply text-4xl font-light mb-6;
   }
 
+  h2 {
+    @apply text-2xl font-light mb-4;
+  }
+
   h3 {
-    @apply text-2xl font-normal mb-3;
+    @apply text-xl font-normal mb-3;
+  }
+
+  h4 {
+    @apply text-lg font-normal mb-1;
   }
 }
 

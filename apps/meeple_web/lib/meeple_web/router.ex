@@ -18,6 +18,7 @@ defmodule MeepleWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    live "/rules", RulesLive.Index, :index
 
     live_session :game do
       live "/board", BoardLive.Index, :index
