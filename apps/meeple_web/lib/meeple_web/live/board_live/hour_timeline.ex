@@ -44,7 +44,7 @@ defmodule MeepleWeb.BoardLive.HourTimeline do
     ~H"""
     <div id="plan-hour-timeline" class="relative w-full mx-8">
       <div class={"absolute overflow-hidden #{sun_transistion(@hour)}"} style={"width: 25px; height: 25px; top: 10px; left: #{@hour/12 * 100}%"}>
-        <img class="absolute #{sun_transistion(@hour})}" style={"top: #{@top}px"} src={"/images/ui/sun_symbol.svg"} />
+        <img class={"absolute #{sun_transistion(@hour)}"} style={"top: #{@top}px"} src={"/images/ui/sun_symbol.svg"} />
       </div>
     </div>
     """
