@@ -28,7 +28,7 @@ defmodule MeepleWeb.BoardLive.Field do
     ~H"""
     <div
       id={"field-#{@x}-#{@y}"}
-      class="field text-[0.5rem] relative"
+      class="field"
       @click="showFieldCard = true"
       phx-click={fade_in(@x, @y, @target)}
       title={field_title(@field)}>
@@ -49,12 +49,13 @@ defmodule MeepleWeb.BoardLive.Field do
 
   def background_image(assigns) do
     ~H"""
-      <img src={"/images/fields/#{@image}"} class="w-full"/>
+      <img src={"/images/fields/#{@image}"} class="field-img"/>
     """
   end
 
   def empty(assigns) do
     ~H"""
+      <img src="/images/fields/unknown.svg" class="field-empty" />
     """
   end
 end
