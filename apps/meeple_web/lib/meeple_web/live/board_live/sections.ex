@@ -71,21 +71,6 @@ defmodule MeepleWeb.BoardLive.Sections do
     """
   end
 
-  def pawn_x(x), do: x * 75
-  def pawn_y(y, height), do: (height - 1 - y) * 75
-
-  def map_pawns(assigns) do
-    ~H"""
-    <%= for pawn <- @pawns do %>
-      <div
-        class="absolute m-3 transition-position duration-[1000ms]"
-        style={"width: 25px; height: 25px; top: #{pawn_y(pawn.y, @height)}px; left: #{pawn_x(pawn.x)}px "}>
-        <img src="/images/ui/human_token.svg" class="w-full"/>
-      </div>
-    <% end %>
-    """
-  end
-
   def plan(assigns) do
     ~H"""
     <div style="grid-area: plan">

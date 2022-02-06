@@ -21,7 +21,6 @@ defmodule MeepleWeb.BoardLive.Index do
         pawns: get_pawns(),
         hour: Board.get_hour()
       )
-      |> assign_dimensions()
 
     {:noreply, handle_action(socket.assigns.live_action, params, session, socket)}
   end
@@ -60,10 +59,8 @@ defmodule MeepleWeb.BoardLive.Index do
           id="map"
           fog_of_war={@fog_of_war}
           fields={@fields}
-          width={@width}
-          height={@height}
-          pawns={@pawns}/>
-        <.map_pawns pawns={@pawns} width={@width} height={@height}/>
+          pawns={@pawns}
+          selected_pawn={1}/>
         <:bottom>
           <.map_bottom pawns={@pawns} />
         </:bottom>
@@ -157,10 +154,5 @@ defmodule MeepleWeb.BoardLive.Index do
 
   defp get_pawns() do
     Board.get_pawns()
-  end
-
-  defp assign_dimensions(socket) do
-    {width, height} = Board.map_dimensions()
-    assign(socket, width: width, height: height)
   end
 end
