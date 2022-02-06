@@ -13,6 +13,11 @@ defmodule Meeple.Action do
     %Action{name: :move, pawn: pawn, x: x, y: y, points: points}
   end
 
+  @discover_costs 4
+  def build_discover(pawn, x, y) do
+    %Action{name: :discover, pawn: pawn, x: x, y: y, points: @discover_costs}
+  end
+
   def execute(%Action{name: :move, pawn: pawn, x: x, y: y}) do
     Logger.info("move action finished")
 
