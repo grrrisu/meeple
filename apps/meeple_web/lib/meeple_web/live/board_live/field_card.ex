@@ -151,7 +151,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     Logger.debug("discover [#{x}, #{y}]")
     {x, y} = {String.to_integer(x), String.to_integer(y)}
 
-    Board.get_pawn(1)
+    Board.get_pawn(socket.assigns.pawn)
     |> Action.build_discover(x, y)
     |> Board.add_action()
 
