@@ -19,13 +19,13 @@ defmodule Meeple.ActionTest do
 
   test "calculate move action for distance 3", %{action: action} do
     action = %Action{action | y: 4}
-    move = Action.build_move(action)
+    move = Action.build_move(action, {1, 1})
     assert %{name: :move, x: 1, y: 4, points: 1} = move
   end
 
   test "calculate move action for distance 4", %{action: action} do
     action = %Action{action | x: 2, y: 4}
-    move = Action.build_move(action)
+    move = Action.build_move(action, {1, 1})
     assert %{name: :move, x: 2, y: 4, points: 2} = move
   end
 end

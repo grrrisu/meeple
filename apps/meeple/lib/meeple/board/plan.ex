@@ -5,21 +5,6 @@ defmodule Meeple.Plan do
 
   alias Meeple.{Action, Pawn}
 
-  @type points :: integer
-  @type done :: integer
-  @type name :: atom
-  @type params :: map
-  @type pawn :: integer
-  @type action :: %{
-          name: name,
-          pawn: pawn,
-          x: integer,
-          y: integer,
-          points: points,
-          done: done,
-          params: params
-        }
-
   def start_link(args \\ []) do
     Agent.start_link(&initial_state/0, name: args[:name] || __MODULE__)
   end
@@ -44,22 +29,40 @@ defmodule Meeple.Plan do
     end)
   end
 
-  # @spec add_action(action, atom | pid | {atom, any} | {:via, atom, any}) :: any
   def add_action(%Action{} = action, pid \\ __MODULE__) do
     Agent.update(pid, fn state ->
-      state = may_add_move_action(state, action)
-      state = add_to_planned(state, action)
+      position = last_position(state, action)
+
+      state =
+        state
+        |> add_to_planned(move_action(action, position))
+        |> add_to_planned(action)
+
       # temp
       broadcast_plan_updated()
       state
     end)
   end
 
-  def may_add_move_action(state, %Action{name: action}) when action in [:test, :move], do: state
-  def may_add_move_action(state, %{pawn: %Pawn{x: x, y: y}, x: x, y: y}), do: state
-  def may_add_move_action(state, action), do: add_to_planned(state, Action.build_move(action))
+  def last_position(state, action) do
+    case :queue.is_empty(state.planned) do
+      true ->
+        # get_pawn with id and return {pawn.x, pawn.y}
+        {action.pawn.x, action.pawn.y}
+
+      false ->
+        action = :queue.get_r(state.planned)
+        {action.x, action.y}
+    end
+  end
+
+  def move_action(%Action{name: action}, _position) when action in [:test, :move], do: nil
+  def move_action(%{x: x, y: y}, {x, y}), do: nil
+  def move_action(action, position), do: Action.build_move(action, position)
 
   # @spec add_to_planned(map, action) :: map
+  def add_to_planned(state, nil), do: state
+
   def add_to_planned(state, action) do
     actions = :queue.in(action, state.planned)
     total_points = action.points + state.total_points
