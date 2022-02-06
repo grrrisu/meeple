@@ -2,7 +2,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   use MeepleWeb, :live_component
   require Logger
 
-  alias Meeple.{Action, Board, Pawn}
+  alias Meeple.{Action, Board}
   import MeepleWeb.BoardLive.FieldHelper
 
   def render(%{field: nil} = assigns) do
@@ -95,7 +95,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     ~H"""
     <div class="text-center font-bold absolute text-steelblue-800"
       style="width: 280px; height: 30px; top: 13px; right: 10px; background-image: url('/images/ui/card_title.svg'); background-size: 280px 30px">
-      <h2 class="pt-1"><%= title %></h2>
+      <h4 class=""><%= title %></h4>
     </div>
     """
   end
@@ -151,7 +151,8 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     Logger.debug("discover [#{x}, #{y}]")
     {x, y} = {String.to_integer(x), String.to_integer(y)}
 
-    %Action{name: :discover, pawn: %Pawn{id: 1, x: 7, y: 1}, points: 4, x: x, y: y}
+    Board.get_pawn(1)
+    |> Action.build_discover(x, y)
     |> Board.add_action()
 
     {:noreply, socket}
