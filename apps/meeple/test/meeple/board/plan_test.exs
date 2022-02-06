@@ -37,11 +37,29 @@ defmodule Meeple.PlanTest do
     assert_receive({:plan_updated})
   end
 
-  test "add move action if pawn is not on the field", %{pid: pid, action: action} do
+  test "add move action if pawn is not on the field for first action", %{pid: pid, action: action} do
     :ok = Plan.add_action(action, pid)
     plan = Plan.get(pid)
     assert 2 == Enum.count(plan.actions)
     assert [%{name: :move, x: 1, y: 2, points: 1}, %{name: :discover}] = plan.actions
+  end
+
+  test "add move action if pawn is not on the field for last action", %{pid: pid, action: action} do
+    :ok =
+      Plan.add_action(
+        Action.build_move(%Action{action | x: 1, y: -2}, {1, 1}),
+        pid
+      )
+
+    :ok = Plan.add_action(action, pid)
+    plan = Plan.get(pid)
+    assert 3 == Enum.count(plan.actions)
+
+    assert [
+             %{name: :move, x: 1, y: -2, points: 1},
+             %{name: :move, x: 1, y: 2, points: 2},
+             %{name: :discover}
+           ] = plan.actions
   end
 
   test "add no move action if pawn is already on the field", %{pid: pid, action: action} do
