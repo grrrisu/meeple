@@ -3,7 +3,7 @@ defmodule Meeple.Board do
   Context for BoardLiveView and its components
   """
 
-  alias Meeple.{Tableau, FogOfWar, Plan, Territory}
+  alias Meeple.{Tableau, FogOfWar, Pawn, Plan, Territory}
 
   def create(name) do
     :ok = Territory.create(name)
@@ -44,8 +44,8 @@ defmodule Meeple.Board do
     Tableau.update_pawn(pawn)
   end
 
-  def add_action(action) do
-    Plan.add_action(action)
+  def add_action(%Pawn{} = pawn, action, opts) do
+    Plan.add_action(pawn, action, opts)
   end
 
   def clear_plan() do

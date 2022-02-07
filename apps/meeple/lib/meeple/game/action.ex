@@ -4,13 +4,17 @@ defmodule Meeple.Action do
 
   require Logger
 
-  alias Meeple.{Action, Board}
+  alias Meeple.{Action, Board, Pawn}
 
   @move_costs 3
-  def build_move(%Action{pawn: pawn, x: x, y: y}, {pawn_x, pawn_y}) do
-    # points = (abs(pawn.x - x) + abs(pawn.y - y)) / @move_costs # wheater and pawn.skills and ...
-    points = ((abs(pawn_x - x) + abs(pawn_y - y)) / @move_costs) |> Float.ceil() |> trunc()
+  def build_move(%Pawn{x: pawn_x, y: pawn_y} = pawn, x, y) do
+    points = move_costs({pawn_x, pawn_y}, {x, y})
     %Action{name: :move, pawn: pawn, x: x, y: y, points: points}
+  end
+
+  def move_costs({pawn_x, pawn_y}, {x, y}) do
+    # points = (abs(pawn.x - x) + abs(pawn.y - y)) / @move_costs # wheater and pawn.skills and ...
+    ((abs(pawn_x - x) + abs(pawn_y - y)) / @move_costs) |> Float.ceil() |> trunc()
   end
 
   @discover_costs 4
