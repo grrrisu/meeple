@@ -2,7 +2,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
   use MeepleWeb, :live_component
   require Logger
 
-  alias Meeple.{Action, Board}
+  alias Meeple.Board
   import MeepleWeb.BoardLive.FieldHelper
 
   def render(%{field: nil} = assigns) do
@@ -115,6 +115,27 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     """
   end
 
+  def action_list(%{field: %{building: :headquarter}} = assigns) do
+    path_costs = 0
+
+    click = [
+      "phx-click": "return_home",
+      "phx-target": assigns.target,
+      "phx-value-x": assigns.x,
+      "phx-value-y": assigns.y
+    ]
+
+    ~H"""
+    <div>
+      <p>
+      Path costs: <%= path_costs %>
+      </p>
+      Actions available:<br/>
+      <.card_close_button text="Return Home" click={click} />
+    </div>
+    """
+  end
+
   def action_list(%{field: %{vegetation: _vegetation}} = assigns) do
     ~H"""
     <div>
@@ -152,8 +173,17 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     {x, y} = {String.to_integer(x), String.to_integer(y)}
 
     Board.get_pawn(socket.assigns.pawn)
-    |> Action.build_discover(x, y)
-    |> Board.add_action()
+    |> Board.add_action(:discover, x: x, y: y)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("return_home", %{"x" => x, "y" => y}, socket) do
+    Logger.debug("return_home [#{x}, #{y}]")
+    {x, y} = {String.to_integer(x), String.to_integer(y)}
+
+    Board.get_pawn(socket.assigns.pawn)
+    |> Board.add_action(:move, x: x, y: y)
 
     {:noreply, socket}
   end

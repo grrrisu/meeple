@@ -29,36 +29,40 @@ defmodule Meeple.Plan do
     end)
   end
 
-  def add_action(%Action{} = action, pid \\ __MODULE__) do
-    Agent.update(pid, fn state ->
-      position = last_position(state, action)
-
-      state =
-        state
-        |> add_to_planned(move_action(action, position))
-        |> add_to_planned(action)
-
-      # temp
-      broadcast_plan_updated()
-      state
-    end)
+  def add_action(%Pawn{} = pawn, action, [x: _x, y: _y] = opts, pid \\ __MODULE__) do
+    Agent.update(pid, fn state -> add_action_to_queue(state, pawn, action, opts) end)
   end
 
-  def last_position(state, action) do
-    case :queue.is_empty(state.planned) do
-      true ->
-        # get_pawn with id and return {pawn.x, pawn.y}
-        {action.pawn.x, action.pawn.y}
+  def add_action_to_queue(state, pawn, action, x: x, y: y) do
+    {last_x, last_y} = last_position(state, pawn)
+    pawn = %Pawn{pawn | x: last_x, y: last_y}
 
-      false ->
-        action = :queue.get_r(state.planned)
-        {action.x, action.y}
+    state =
+      state
+      |> add_to_planned(move_action(pawn, action, x, y))
+      |> add_to_planned(build_action(pawn, action, x, y))
+
+    # temp
+    broadcast_plan_updated()
+    state
+  end
+
+  def last_position(state, pawn) do
+    if :queue.is_empty(state.planned) do
+      {pawn.x, pawn.y}
+    else
+      action = :queue.get_r(state.planned)
+      {action.x, action.y}
     end
   end
 
-  def move_action(%Action{name: action}, _position) when action in [:test, :move], do: nil
-  def move_action(%{x: x, y: y}, {x, y}), do: nil
-  def move_action(action, position), do: Action.build_move(action, position)
+  def move_action(_pawn, action, _x, _y) when action in [:move, :test], do: nil
+  def move_action(%Pawn{x: x, y: y}, _action, x, y), do: nil
+  def move_action(pawn, _action, x, y), do: Action.build_move(pawn, x, y)
+
+  def build_action(pawn, :move, x, y), do: Action.build_move(pawn, x, y)
+  def build_action(pawn, :discover, x, y), do: Action.build_discover(pawn, x, y)
+  def build_action(pawn, :test, x, y), do: %Action{name: :test, pawn: pawn, x: x, y: y, points: 0}
 
   # @spec add_to_planned(map, action) :: map
   def add_to_planned(state, nil), do: state
@@ -82,17 +86,13 @@ defmodule Meeple.Plan do
     {{:value, action}, planned} = :queue.out(planned)
     action = %Action{action | done: action.done + 1}
 
-    case action.done == action.points do
-      true ->
-        Action.execute(action)
-        broadcast_plan_updated()
-        %{state | planned: planned, done: :queue.in(action, done)}
-
-      false ->
-        # events:
-        # plan: [plan_updated, execution_finished]
-        broadcast_plan_updated()
-        %{state | planned: :queue.in_r(action, planned)}
+    if action.done == action.points do
+      Action.execute(action)
+      broadcast_plan_updated()
+      %{state | planned: planned, done: :queue.in(action, done)}
+    else
+      broadcast_plan_updated()
+      %{state | planned: :queue.in_r(action, planned)}
     end
   end
 

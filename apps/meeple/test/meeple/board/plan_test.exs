@@ -1,22 +1,14 @@
 defmodule Meeple.PlanTest do
   use ExUnit.Case, async: true
 
-  alias Meeple.{Action, Pawn, Plan}
+  alias Meeple.{Pawn, Plan}
   alias Meeple.PubSub
 
   setup do
     pid = start_supervised!({Plan, name: :plan_test})
     Phoenix.PubSub.subscribe(PubSub, "GameSession")
-
-    discover_action = %Action{
-      name: :discover,
-      pawn: %Pawn{id: 1, x: 1, y: 1},
-      x: 1,
-      y: 2,
-      points: 4
-    }
-
-    %{pid: pid, action: discover_action}
+    pawn = %Pawn{id: 1, x: 1, y: 1}
+    %{pid: pid, pawn: pawn}
   end
 
   test "get initial state", %{pid: pid} do
@@ -24,34 +16,32 @@ defmodule Meeple.PlanTest do
     assert %{actions: [], total_points: 0} = plan
   end
 
-  test "add discover action", %{pid: pid, action: action} do
-    :ok = Plan.add_action(action, pid)
+  test "add discover action", %{pid: pid, pawn: pawn} do
+    :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
     plan = Plan.get(pid)
     assert 2 == Enum.count(plan.actions)
     assert [%{name: :move}, %{name: :discover}] = plan.actions
     assert 5 == plan.total_points
   end
 
-  test "send event when a action has been added", %{pid: pid, action: action} do
-    :ok = Plan.add_action(action, pid)
+  test "send event when an action has been added", %{pid: pid, pawn: pawn} do
+    :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
     assert_receive({:plan_updated})
   end
 
-  test "add move action if pawn is not on the field for first action", %{pid: pid, action: action} do
-    :ok = Plan.add_action(action, pid)
+  test "add move action if pawn is not on the field for his first action", %{pid: pid, pawn: pawn} do
+    :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
     plan = Plan.get(pid)
     assert 2 == Enum.count(plan.actions)
     assert [%{name: :move, x: 1, y: 2, points: 1}, %{name: :discover}] = plan.actions
   end
 
-  test "add move action if pawn is not on the field for last action", %{pid: pid, action: action} do
-    :ok =
-      Plan.add_action(
-        Action.build_move(%Action{action | x: 1, y: -2}, {1, 1}),
-        pid
-      )
-
-    :ok = Plan.add_action(action, pid)
+  test "add move action if pawn is not on the field since his last action", %{
+    pid: pid,
+    pawn: pawn
+  } do
+    :ok = Plan.add_action(pawn, :move, [x: 1, y: -2], pid)
+    :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
     plan = Plan.get(pid)
     assert 3 == Enum.count(plan.actions)
 
@@ -62,17 +52,16 @@ defmodule Meeple.PlanTest do
            ] = plan.actions
   end
 
-  test "add no move action if pawn is already on the field", %{pid: pid, action: action} do
-    action = %Action{action | y: 1}
-    :ok = Plan.add_action(action, pid)
+  test "add no move action if pawn is already on the field", %{pid: pid, pawn: pawn} do
+    pawn = %Pawn{pawn | y: 2}
+    :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
     plan = Plan.get(pid)
     assert 1 == Enum.count(plan.actions)
     assert [%{name: :discover}] = plan.actions
   end
 
-  test "add no move action if added action is a move action", %{pid: pid, action: action} do
-    action = %Action{action | name: :move}
-    :ok = Plan.add_action(action, pid)
+  test "add no move action if added action is a move action", %{pid: pid, pawn: pawn} do
+    :ok = Plan.add_action(pawn, :move, [x: 1, y: 2], pid)
     plan = Plan.get(pid)
     assert 1 == Enum.count(plan.actions)
     assert [%{name: :move}] = plan.actions
@@ -84,9 +73,9 @@ defmodule Meeple.PlanTest do
     assert %{actions: [], total_points: 0} = plan
   end
 
-  test "increase done when action is not yet done", %{pid: pid, action: action} do
-    action = %Action{action | y: 1}
-    :ok = Plan.add_action(action, pid)
+  test "increase done when action is not yet done", %{pid: pid, pawn: pawn} do
+    pawn = %Pawn{pawn | y: 2}
+    :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
     assert_receive({:plan_updated})
     :ok = Plan.tick(pid)
     assert_receive({:plan_updated})
@@ -94,13 +83,12 @@ defmodule Meeple.PlanTest do
     assert %{done: 1, points: 4} = plan.actions |> List.first()
   end
 
-  test "keep action in queue when it's done", %{pid: pid, action: action} do
-    action = %Action{action | name: :test, points: 3, done: 2}
-    :ok = Plan.add_action(action, pid)
+  test "keep action in queue when it's done", %{pid: pid, pawn: pawn} do
+    :ok = Plan.add_action(pawn, :test, [x: 1, y: 2], pid)
     assert_receive({:plan_updated})
     :ok = Plan.tick(pid)
     assert_receive({:plan_updated})
     plan = Plan.get(pid)
-    assert %{done: 3, points: 3} = plan.actions |> List.first()
+    assert %{done: 1} = plan.actions |> List.first()
   end
 end
