@@ -14,14 +14,6 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_params(params, session, socket) do
-    socket =
-      assign(socket,
-        fog_of_war: true,
-        fields: get_fields(true),
-        pawns: get_pawns(),
-        hour: Board.get_hour()
-      )
-
     {:noreply, handle_action(socket.assigns.live_action, params, session, socket)}
   end
 
@@ -33,7 +25,7 @@ defmodule MeepleWeb.BoardLive.Index do
         |> redirect(to: "/")
 
       _ ->
-        socket
+        prepare_assigns(socket)
     end
   end
 
@@ -132,6 +124,15 @@ defmodule MeepleWeb.BoardLive.Index do
     {:noreply, socket}
   end
 
+  defp prepare_assigns(socket) do
+    assign(socket,
+      fog_of_war: true,
+      fields: get_fields(true),
+      pawns: get_pawns(),
+      hour: get_hour()
+    )
+  end
+
   defp assign_fields(socket) do
     assign(socket, fields: get_fields(socket.assigns.fog_of_war))
   end
@@ -154,5 +155,9 @@ defmodule MeepleWeb.BoardLive.Index do
 
   defp get_pawns() do
     Board.get_pawns()
+  end
+
+  defp get_hour() do
+    Board.get_hour()
   end
 end

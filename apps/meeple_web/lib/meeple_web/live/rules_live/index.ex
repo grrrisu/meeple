@@ -3,7 +3,7 @@ defmodule MeepleWeb.RulesLive.Index do
 
   import MeepleWeb.BoardLive.FieldHelper
 
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     {:ok, socket}
   end
 
