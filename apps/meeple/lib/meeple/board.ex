@@ -2,7 +2,7 @@ defmodule Meeple.Board do
   @moduledoc """
   Context for BoardLiveView and its components
   """
-
+  alias Sim.Realm.SimulationLoop
   alias Meeple.{Tableau, FogOfWar, Pawn, Plan, Territory}
 
   def create(name) do
@@ -59,5 +59,15 @@ defmodule Meeple.Board do
   def next_hour() do
     Plan.tick()
     Tableau.inc_hour()
+  end
+
+  def start_day() do
+    SimulationLoop.start(1_000, fn ->
+      if next_hour() < 11, do: :ok, else: :stop
+    end)
+  end
+
+  def stop_day() do
+    SimulationLoop.stop()
   end
 end

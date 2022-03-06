@@ -69,7 +69,7 @@ defmodule Meeple.Tableau do
   end
 
   def inc_hour(pid \\ __MODULE__) do
-    Agent.update(pid, fn state ->
+    Agent.get_and_update(pid, fn state ->
       broadcast_hour_updated()
 
       hour =
@@ -78,7 +78,7 @@ defmodule Meeple.Tableau do
           hour -> hour + 1
         end
 
-      %{state | hour: hour}
+      {hour, %{state | hour: hour}}
     end)
   end
 

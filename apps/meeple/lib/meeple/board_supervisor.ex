@@ -1,6 +1,7 @@
 defmodule Meeple.BoardSupervisor do
   use Supervisor
 
+  alias Sim.Realm.SimulationLoop
   alias Meeple.{Tableau, FogOfWar, GameSession, Plan, Territory}
 
   def start_link(_opts) do
@@ -14,6 +15,7 @@ defmodule Meeple.BoardSupervisor do
       Tableau,
       FogOfWar,
       Plan,
+      SimulationLoop,
       GameSession
     ]
 
