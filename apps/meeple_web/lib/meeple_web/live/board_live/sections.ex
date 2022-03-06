@@ -74,7 +74,11 @@ defmodule MeepleWeb.BoardLive.Sections do
   def map_bottom_right(assigns) do
     ~H"""
     <div phx-click="toggle_running" phx-value-running={@running}>
-      <i class="las la-caret-right la-3x"></i>
+      <%= if @running=="true" do %>
+        <i class="la-3x las la-pause-circle"></i>
+      <% else %>
+        <i class="la-3x las la-play-circle"></i>
+      <% end %>
     </div>
     """
   end
