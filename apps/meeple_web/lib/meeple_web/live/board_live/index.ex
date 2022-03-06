@@ -57,7 +57,7 @@ defmodule MeepleWeb.BoardLive.Index do
           <.map_bottom pawns={@pawns} />
         </:bottom>
         <:bottom_right>
-          <.map_bottom_right running={"false"} />
+          <.map_bottom_right running={to_string(@running)} />
         </:bottom_right>
       </.board_map>
       <.plan>
@@ -109,7 +109,7 @@ defmodule MeepleWeb.BoardLive.Index do
   def handle_event("toggle_running", %{"running" => "true"}, socket) do
     Logger.info("stop day")
     :ok = Board.stop_day()
-    {:noreply, socket}
+    {:noreply, assign(socket, running: false)}
   end
 
   def handle_info({:field_discovered, %{x: _x, y: _y}}, socket) do
@@ -131,7 +131,7 @@ defmodule MeepleWeb.BoardLive.Index do
   def handle_info({:hour_updated}, socket) do
     Logger.info("hour updated")
     update_plan(socket)
-    {:noreply, socket |> assign_fields() |> assign(hour: Board.get_hour())}
+    {:noreply, socket |> assign_fields() |> assign(hour: get_hour(), running: running?())}
   end
 
   def handle_info(_ignore, socket) do
@@ -144,7 +144,8 @@ defmodule MeepleWeb.BoardLive.Index do
       fog_of_war: true,
       fields: get_fields(true),
       pawns: get_pawns(),
-      hour: get_hour()
+      hour: get_hour(),
+      running: running?()
     )
   end
 
@@ -174,5 +175,9 @@ defmodule MeepleWeb.BoardLive.Index do
 
   defp get_hour() do
     Board.get_hour()
+  end
+
+  defp running?() do
+    Board.running?()
   end
 end

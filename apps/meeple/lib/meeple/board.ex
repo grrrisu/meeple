@@ -63,11 +63,20 @@ defmodule Meeple.Board do
 
   def start_day() do
     SimulationLoop.start(1_000, fn ->
-      if next_hour() < 11, do: :ok, else: :stop
+      if next_hour() < 11 do
+        :ok
+      else
+        clear_plan()
+        :stop
+      end
     end)
   end
 
   def stop_day() do
     SimulationLoop.stop()
+  end
+
+  def running?() do
+    SimulationLoop.running?()
   end
 end
