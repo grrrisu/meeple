@@ -11,9 +11,14 @@ defmodule Meeple.GameSession do
 
   @impl true
   def init(opts) do
-    subscribe()
     state = %{fog_of_war: opts[:fog_of_war] || FogOfWar, plan: opts[:plan] || Plan}
-    {:ok, state}
+    {:ok, state, {:continue, :subscribe}}
+  end
+
+  @impl true
+  def handle_continue(:subscribe, state) do
+    subscribe()
+    {:noreply, state}
   end
 
   @impl true
