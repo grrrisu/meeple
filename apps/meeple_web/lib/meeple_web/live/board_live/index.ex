@@ -56,6 +56,9 @@ defmodule MeepleWeb.BoardLive.Index do
         <:bottom>
           <.map_bottom pawns={@pawns} />
         </:bottom>
+        <:bottom_right>
+          <.map_bottom_right running={"false"} />
+        </:bottom_right>
       </.board_map>
       <.plan>
         <.live_component module={Plan} id="plan" />
@@ -93,7 +96,19 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_event("next-hour", _params, socket) do
     Logger.info("next-hour")
-    :ok = Board.next_hour()
+    Board.next_hour()
+    {:noreply, socket}
+  end
+
+  def handle_event("toggle_running", %{"running" => "false"}, socket) do
+    Logger.info("start day")
+    :ok = Board.start_day()
+    {:noreply, socket}
+  end
+
+  def handle_event("toggle_running", %{"running" => "true"}, socket) do
+    Logger.info("stop day")
+    :ok = Board.stop_day()
     {:noreply, socket}
   end
 
