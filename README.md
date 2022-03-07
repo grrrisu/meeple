@@ -1,3 +1,5 @@
+[![Stop the War in Ukraine](Stop_War_in_Ukraine.png)](https://en.wikipedia.org/wiki/2022_Russian_invasion_of_Ukraine)
+
 # Meeple
 
 [![Elixir CI](https://github.com/grrrisu/meeple/actions/workflows/elixir.yml/badge.svg)](https://github.com/grrrisu/meeple/actions/workflows/elixir.yml)
