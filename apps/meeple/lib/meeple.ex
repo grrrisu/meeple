@@ -1,9 +1,8 @@
 defmodule Meeple do
-  @moduledoc """
-  Meeple keeps the contexts that define your domain
-  and business logic.
+  alias Sim.Realm
+  use Realm, app_module: __MODULE__
 
-  Contexts are also responsible for managing your data, regardless
-  if it comes from the database, an external API or others.
-  """
+  def create(name) do
+    send_command({:create, name: name})
+  end
 end
