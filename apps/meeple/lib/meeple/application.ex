@@ -10,7 +10,15 @@ defmodule Meeple.Application do
     children = [
       Meeple.Repo,
       {Phoenix.PubSub, name: Meeple.PubSub},
-      Meeple.BoardSupervisor
+      {
+        Sim.Realm.Supervisor,
+        name: MeepleRealm,
+        domain_services: [
+          {Meeple.UserService, partition: :user, max_demand: 5}
+          # {GameOfLife.SimService, partition: :sim, max_demand: 1}
+        ],
+        reducers: [Meeple.PubSubReducer]
+      }
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Meeple.Supervisor)
