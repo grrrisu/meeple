@@ -17,12 +17,11 @@ defmodule MeepleWeb.Router do
   scope "/", MeepleWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    live "/rules", RulesLive.Index, :index
-
     live_session :game do
+      live "/", EntryLive.Index, :index
+      live "/create/:territory", EntryLive.Index, :create
+      live "/rules", RulesLive.Index, :index
       live "/board", BoardLive.Index, :index
-      live "/board/:territory", BoardLive.Index, :create
     end
   end
 

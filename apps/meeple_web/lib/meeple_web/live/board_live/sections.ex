@@ -14,7 +14,7 @@ defmodule MeepleWeb.BoardLive.Sections do
   def nav(assigns) do
     ~H"""
     <div style="grid-area: nav">
-      <a href="/">&lt; Back</a>
+      <%= live_redirect "< Back", to: "/" %>
     </div>
     """
   end
