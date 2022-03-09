@@ -29,14 +29,6 @@ defmodule MeepleWeb.BoardLive.Index do
     end
   end
 
-  def handle_action(:create, %{"territory" => territory}, _session, socket) do
-    create_territory(territory)
-
-    socket
-    |> put_flash(:info, "board #{territory} created")
-    |> redirect(to: "/board")
-  end
-
   def render(assigns) do
     ~H"""
     <div class="board">
@@ -71,7 +63,7 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_event("toggle-admin-view", %{"slider-value" => "on"}, socket) do
-    Logger.info("slider value: on")
+    Logger.info("board index slider value: on")
 
     {:noreply,
      socket
@@ -80,7 +72,7 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_event("toggle-admin-view", _slider_off, socket) do
-    Logger.info("slider value: OFF!")
+    Logger.info("board index slider value: OFF!")
 
     {:noreply,
      socket
@@ -89,53 +81,53 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_event("clear-plan", _params, socket) do
-    Logger.info("clear-plan")
+    Logger.info("board index clear-plan")
     :ok = Board.clear_plan()
     {:noreply, socket}
   end
 
   def handle_event("next-hour", _params, socket) do
-    Logger.info("next-hour")
+    Logger.info("board index next-hour")
     Board.next_hour()
     {:noreply, socket}
   end
 
   def handle_event("toggle_running", %{"running" => "false"}, socket) do
-    Logger.info("start day")
+    Logger.info("board index start day")
     :ok = Board.start_day()
     {:noreply, socket}
   end
 
   def handle_event("toggle_running", %{"running" => "true"}, socket) do
-    Logger.info("stop day")
+    Logger.info("board index stop day")
     :ok = Board.stop_day()
     {:noreply, assign(socket, running: false)}
   end
 
   def handle_info({:field_discovered, %{x: _x, y: _y}}, socket) do
-    Logger.info("field discovered")
+    Logger.info("board index field discovered")
     {:noreply, assign_fields(socket)}
   end
 
   def handle_info({:grid_updated}, socket) do
-    Logger.info("grid updated")
+    Logger.info("board index grid updated")
     {:noreply, socket |> assign_fields() |> assign(pawns: get_pawns())}
   end
 
   def handle_info({:plan_updated}, socket) do
-    Logger.info("plan updated")
+    Logger.info("board index plan updated")
     update_plan(socket)
     {:noreply, socket}
   end
 
   def handle_info({:hour_updated}, socket) do
-    Logger.info("hour updated")
+    Logger.info("board index hour updated")
     update_plan(socket)
     {:noreply, socket |> assign_fields() |> assign(hour: get_hour(), running: running?())}
   end
 
-  def handle_info(_ignore, socket) do
-    Logger.info("ignore")
+  def handle_info(ignore, socket) do
+    Logger.info("board index ignore #{inspect(ignore)}")
     {:noreply, socket}
   end
 
@@ -161,10 +153,6 @@ defmodule MeepleWeb.BoardLive.Index do
     Phoenix.PubSub.subscribe(Meeple.PubSub, "GameSession")
   end
 
-  defp create_territory(name) do
-    Board.create(name)
-  end
-
   defp get_fields(fog_of_war) do
     Board.get_grid(fog_of_war)
   end
@@ -178,6 +166,6 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   defp running?() do
-    Board.running?()
+    Meeple.started?()
   end
 end
