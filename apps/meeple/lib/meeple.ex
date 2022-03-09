@@ -1,8 +1,7 @@
 defmodule Meeple do
-  alias Sim.Realm
-  use Realm, app_module: __MODULE__
+  use Sim.Realm, app_module: MeepleRealm
 
-  def create(name) do
-    send_command({:create, name: name})
+  def create_game(name) do
+    send_command({:admin, :create, name: name})
   end
 end

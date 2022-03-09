@@ -15,7 +15,6 @@ defmodule Meeple.BoardSupervisor do
       Tableau,
       FogOfWar,
       Plan,
-      SimulationLoop,
       GameSession
     ]
 

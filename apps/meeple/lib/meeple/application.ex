@@ -10,12 +10,14 @@ defmodule Meeple.Application do
     children = [
       Meeple.Repo,
       {Phoenix.PubSub, name: Meeple.PubSub},
+      Meeple.BoardSupervisor,
       {
         Sim.Realm.Supervisor,
         name: MeepleRealm,
         domain_services: [
-          {Meeple.UserService, partition: :user, max_demand: 5}
-          # {GameOfLife.SimService, partition: :sim, max_demand: 1}
+          {Meeple.Service.Admin, partition: :admin, max_demand: 1},
+          {Meeple.Service.User, partition: :user, max_demand: 1},
+          {Meeple.Service.Sim, partition: :sim, max_demand: 1}
         ],
         reducers: [Meeple.PubSubReducer]
       }
