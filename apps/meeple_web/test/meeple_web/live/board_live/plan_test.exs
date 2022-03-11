@@ -3,9 +3,10 @@ defmodule MeepleWeb.BoardLive.PlanTest do
   import Phoenix.LiveViewTest
 
   alias Meeple.{Board, Pawn}
+  alias Meeple.Service.Admin
 
   setup do
-    Board.create("test")
+    Admin.execute(:create, name: "test")
   end
 
   test "setup board", %{conn: conn} do
