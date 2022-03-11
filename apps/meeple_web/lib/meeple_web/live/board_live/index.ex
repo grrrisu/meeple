@@ -104,6 +104,10 @@ defmodule MeepleWeb.BoardLive.Index do
     {:noreply, assign(socket, running: false)}
   end
 
+  def handle_info({:error, message}, socket) do
+    {:noreply, socket |> clear_flash() |> put_flash(:error, message)}
+  end
+
   def handle_info({:field_discovered, %{x: _x, y: _y}}, socket) do
     Logger.info("board index field discovered")
     {:noreply, assign_fields(socket)}
