@@ -50,6 +50,10 @@ defmodule MeepleWeb.EntryLive.Index do
     """
   end
 
+  def handle_info({:error, message}, socket) do
+    {:noreply, socket |> clear_flash() |> put_flash(:error, message)}
+  end
+
   def handle_info({:game_created, name: name}, socket) do
     Logger.info("game #{name} created")
 
