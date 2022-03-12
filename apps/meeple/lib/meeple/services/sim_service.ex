@@ -2,19 +2,17 @@ defmodule Meeple.Service.Sim do
   @behaviour Sim.CommandHandler
 
   alias Sim.SimulationLoop
-  alias Meeple.{Tableau, Plan}
+  alias Meeple.Board
 
-  def execute(:start_day, delay: _delay) do
-    SimulationLoop.start(1_000, fn ->
-      if next_hour() < 11 do
-        :ok
-      else
-        Plan.clear()
-        :stop
-      end
-    end)
-
-    [{:sim, started: true}]
+  def execute(:tick, []) do
+    if Board.get_hour() < 11 do
+      Meeple.next_hour()
+      [{:day_simulated, continued: true}]
+    else
+      Meeple.stop_day()
+      Meeple.clear_plan()
+      [{:day_simulated, continued: false}]
+    end
   end
 
   # def execute(:tick) do
@@ -31,12 +29,7 @@ defmodule Meeple.Service.Sim do
   #   events
   # end
 
-  def execute(:plan, :action_ready, action: action) do
-    Action.execute(action)
-  end
-
-  defp next_hour() do
-    Plan.tick()
-    Tableau.inc_hour()
-  end
+  # def execute(:plan, :action_ready, action: action) do
+  #   Action.execute(action)
+  # end
 end

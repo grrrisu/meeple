@@ -12,4 +12,16 @@ defmodule Meeple do
   def clear_plan() do
     send_command({:admin, :clear_plan})
   end
+
+  def start_day() do
+    send_command({:user, :start_day})
+  end
+
+  def stop_day() do
+    send_command({:user, :stop_day})
+  end
+
+  def tick() do
+    send_command({:sim, :tick})
+  end
 end
