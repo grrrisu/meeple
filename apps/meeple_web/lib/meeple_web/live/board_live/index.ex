@@ -82,7 +82,7 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_event("clear-plan", _params, socket) do
     Logger.info("board index clear-plan")
-    :ok = Board.clear_plan()
+    :ok = Meeple.clear_plan()
     {:noreply, socket}
   end
 
