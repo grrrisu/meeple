@@ -1,14 +1,20 @@
 defmodule Meeple.Service.Admin do
   @behaviour Sim.CommandHandler
 
-  alias Meeple.{Tableau, FogOfWar, Plan, Territory}
+  alias Meeple.Board
 
   def execute(:create, name: name) do
-    :ok = Territory.create(name)
-    :ok = Tableau.create(name)
-    Tableau.pawns() |> Enum.each(&Territory.set_pawn(&1))
-    :ok = FogOfWar.create(name)
-    :ok = Plan.clear()
+    :ok = Board.create(name)
     [{:game_created, name: name}]
+  end
+
+  def execute(:clear_plan, []) do
+    Board.clear_plan()
+    [{:plan_updated, :cleared}]
+  end
+
+  def execute(:next_hour, []) do
+    hour = Board.next_hour()
+    [{:hour_updated, hour: hour}]
   end
 end

@@ -88,7 +88,7 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_event("next-hour", _params, socket) do
     Logger.info("board index next-hour")
-    Board.next_hour()
+    :ok = Meeple.next_hour()
     {:noreply, socket}
   end
 
@@ -124,10 +124,10 @@ defmodule MeepleWeb.BoardLive.Index do
     {:noreply, socket}
   end
 
-  def handle_info({:hour_updated}, socket) do
+  def handle_info({:hour_updated, hour: hour}, socket) do
     Logger.info("board index hour updated")
     update_plan(socket)
-    {:noreply, socket |> assign_fields() |> assign(hour: get_hour(), running: running?())}
+    {:noreply, socket |> assign_fields() |> assign(hour: hour, running: running?())}
   end
 
   def handle_info(ignore, socket) do
