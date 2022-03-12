@@ -23,10 +23,7 @@ defmodule Meeple.Plan do
   end
 
   def clear(pid \\ __MODULE__) do
-    Agent.cast(pid, fn _ ->
-      broadcast_plan_updated()
-      initial_state()
-    end)
+    Agent.cast(pid, fn _ -> initial_state() end)
   end
 
   def add_action(%Pawn{} = pawn, action, [x: _x, y: _y] = opts, pid \\ __MODULE__) do
