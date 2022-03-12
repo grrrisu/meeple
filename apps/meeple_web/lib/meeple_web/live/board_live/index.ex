@@ -94,13 +94,13 @@ defmodule MeepleWeb.BoardLive.Index do
 
   def handle_event("toggle_running", %{"running" => "false"}, socket) do
     Logger.info("board index start day")
-    :ok = Board.start_day()
+    :ok = Meeple.start_day()
     {:noreply, socket}
   end
 
   def handle_event("toggle_running", %{"running" => "true"}, socket) do
     Logger.info("board index stop day")
-    :ok = Board.stop_day()
+    :ok = Meeple.stop_day()
     {:noreply, assign(socket, running: false)}
   end
 
@@ -118,6 +118,12 @@ defmodule MeepleWeb.BoardLive.Index do
     {:noreply, socket |> assign_fields() |> assign(pawns: get_pawns())}
   end
 
+  def handle_info({:plan_updated, _}, socket) do
+    Logger.info("board index plan updated")
+    update_plan(socket)
+    {:noreply, socket}
+  end
+
   def handle_info({:plan_updated}, socket) do
     Logger.info("board index plan updated")
     update_plan(socket)
@@ -127,7 +133,12 @@ defmodule MeepleWeb.BoardLive.Index do
   def handle_info({:hour_updated, hour: hour}, socket) do
     Logger.info("board index hour updated")
     update_plan(socket)
-    {:noreply, socket |> assign_fields() |> assign(hour: hour, running: running?())}
+    {:noreply, socket |> assign_fields() |> assign(hour: hour)}
+  end
+
+  def handle_info({:day_started, running: running}, socket) do
+    Logger.info("board index day started")
+    {:noreply, assign(socket, running: running)}
   end
 
   def handle_info(ignore, socket) do
