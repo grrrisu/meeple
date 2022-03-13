@@ -6,7 +6,7 @@ defmodule Meeple.Service.Sim do
   def execute(:tick, []) do
     if Board.get_hour() < 11 do
       Meeple.next_hour()
-      [{:day_simulated, continued: true}]
+      [{:day_simulated, continued: true}, {:plan_updated, :simulated}]
     else
       Meeple.stop_day()
       Meeple.clear_plan()

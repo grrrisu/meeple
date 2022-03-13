@@ -80,20 +80,9 @@ defmodule Meeple.Plan do
 
     if action.done == action.points do
       Action.execute(action)
-      broadcast_plan_updated()
       %{state | planned: planned, done: :queue.in(action, done)}
     else
-      broadcast_plan_updated()
       %{state | planned: :queue.in_r(action, planned)}
     end
-  end
-
-  defp broadcast_plan_updated do
-    broadcast_event({:plan_updated})
-  end
-
-  @spec broadcast_event(any) :: :ok | {:error, any}
-  defp broadcast_event(event) do
-    :ok = Phoenix.PubSub.broadcast(Meeple.PubSub, "GameSession", event)
   end
 end
