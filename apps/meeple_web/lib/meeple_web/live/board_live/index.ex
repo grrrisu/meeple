@@ -124,12 +124,6 @@ defmodule MeepleWeb.BoardLive.Index do
     {:noreply, socket}
   end
 
-  def handle_info({:plan_updated}, socket) do
-    Logger.info("board index plan updated")
-    update_plan(socket)
-    {:noreply, socket}
-  end
-
   def handle_info({:hour_updated, hour: hour}, socket) do
     Logger.info("board index hour updated")
     update_plan(socket)
