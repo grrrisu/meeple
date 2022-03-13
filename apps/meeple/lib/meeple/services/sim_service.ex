@@ -1,7 +1,6 @@
 defmodule Meeple.Service.Sim do
   @behaviour Sim.CommandHandler
 
-  alias Sim.SimulationLoop
   alias Meeple.Board
 
   def execute(:tick, []) do

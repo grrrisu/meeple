@@ -13,6 +13,10 @@ defmodule Meeple do
     send_command({:admin, :clear_plan})
   end
 
+  def add_action(pawn, action, params) do
+    send_command({:user, :add_action, Keyword.merge(params, pawn: pawn, action: action)})
+  end
+
   def start_day() do
     send_command({:user, :start_day})
   end

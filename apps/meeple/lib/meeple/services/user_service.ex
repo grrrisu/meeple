@@ -3,7 +3,12 @@ defmodule Meeple.Service.User do
 
   @behaviour Sim.CommandHandler
 
-  # alias Meeple.Board
+  alias Meeple.Board
+
+  def execute(:add_action, params) do
+    Board.add_action(params[:pawn], params[:action], x: params[:x], y: params[:y])
+    [{:plan_updated, :action_added}]
+  end
 
   def execute(:start_day, []) do
     start_simulation_loop(1_000, &Meeple.tick/0)

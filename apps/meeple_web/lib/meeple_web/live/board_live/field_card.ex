@@ -173,7 +173,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     {x, y} = {String.to_integer(x), String.to_integer(y)}
 
     Board.get_pawn(socket.assigns.pawn)
-    |> Board.add_action(:discover, x: x, y: y)
+    |> Meeple.add_action(:discover, x: x, y: y)
 
     {:noreply, socket}
   end
@@ -183,7 +183,7 @@ defmodule MeepleWeb.BoardLive.FieldCard do
     {x, y} = {String.to_integer(x), String.to_integer(y)}
 
     Board.get_pawn(socket.assigns.pawn)
-    |> Board.add_action(:move, x: x, y: y)
+    |> Meeple.add_action(:move, x: x, y: y)
 
     {:noreply, socket}
   end
