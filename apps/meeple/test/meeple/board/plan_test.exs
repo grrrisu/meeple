@@ -2,11 +2,9 @@ defmodule Meeple.PlanTest do
   use ExUnit.Case, async: true
 
   alias Meeple.{Pawn, Plan}
-  alias Meeple.PubSub
 
   setup do
     pid = start_supervised!({Plan, name: :plan_test})
-    Phoenix.PubSub.subscribe(PubSub, "GameSession")
     pawn = %Pawn{id: 1, x: 1, y: 1}
     %{pid: pid, pawn: pawn}
   end
@@ -22,11 +20,6 @@ defmodule Meeple.PlanTest do
     assert 2 == Enum.count(plan.actions)
     assert [%{name: :move}, %{name: :discover}] = plan.actions
     assert 5 == plan.total_points
-  end
-
-  test "send event when an action has been added", %{pid: pid, pawn: pawn} do
-    :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
-    assert_receive({:plan_updated})
   end
 
   test "add move action if pawn is not on the field for his first action", %{pid: pid, pawn: pawn} do
@@ -76,18 +69,14 @@ defmodule Meeple.PlanTest do
   test "increase done when action is not yet done", %{pid: pid, pawn: pawn} do
     pawn = %Pawn{pawn | y: 2}
     :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
-    assert_receive({:plan_updated})
     :ok = Plan.tick(pid)
-    assert_receive({:plan_updated})
     plan = Plan.get(pid)
     assert %{done: 1, points: 4} = plan.actions |> List.first()
   end
 
   test "keep action in queue when it's done", %{pid: pid, pawn: pawn} do
     :ok = Plan.add_action(pawn, :test, [x: 1, y: 2], pid)
-    assert_receive({:plan_updated})
     :ok = Plan.tick(pid)
-    assert_receive({:plan_updated})
     plan = Plan.get(pid)
     assert %{done: 1} = plan.actions |> List.first()
   end
