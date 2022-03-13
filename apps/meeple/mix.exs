@@ -41,8 +41,16 @@ defmodule Meeple.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.2"},
       {:swoosh, "~> 1.3"},
-      # {:sim, git: "https://github.com/grrrisu/thundermoon-umbrella.git", subdir: "/apps/sim", app: false}
-      {:sim, path: "../../../thundermoon_umbrella/apps/sim", app: false, only: :dev}
+      {:sim,
+       git: "https://github.com/grrrisu/thundermoon-umbrella.git",
+       subdir: "/apps/sim",
+       app: false,
+       override: true}
+      # {:sim,
+      #  path: "../../../thundermoon_umbrella/apps/sim",
+      #  override: true,
+      #  app: false,
+      #  only: [:dev, :test]}
     ]
   end
 
