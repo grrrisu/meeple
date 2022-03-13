@@ -34,14 +34,9 @@ defmodule Meeple.Plan do
     {last_x, last_y} = last_position(state, pawn)
     pawn = %Pawn{pawn | x: last_x, y: last_y}
 
-    state =
-      state
-      |> add_to_planned(move_action(pawn, action, x, y))
-      |> add_to_planned(build_action(pawn, action, x, y))
-
-    # temp
-    broadcast_plan_updated()
     state
+    |> add_to_planned(move_action(pawn, action, x, y))
+    |> add_to_planned(build_action(pawn, action, x, y))
   end
 
   def last_position(state, pawn) do
