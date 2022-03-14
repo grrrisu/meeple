@@ -1,7 +1,7 @@
 defmodule Meeple.PlanTest do
   use ExUnit.Case, async: true
 
-  alias Meeple.{Pawn, Plan}
+  alias Meeple.{Action, Pawn, Plan}
 
   setup do
     pid = start_supervised!({Plan, name: :plan_test})
@@ -61,7 +61,7 @@ defmodule Meeple.PlanTest do
   end
 
   test "do nothing if action queue is empty", %{pid: pid} do
-    :ok = Plan.tick(pid)
+    assert :empty = Plan.inc_action(pid)
     plan = Plan.get(pid)
     assert %{actions: [], total_points: 0} = plan
   end
@@ -69,14 +69,14 @@ defmodule Meeple.PlanTest do
   test "increase done when action is not yet done", %{pid: pid, pawn: pawn} do
     pawn = %Pawn{pawn | y: 2}
     :ok = Plan.add_action(pawn, :discover, [x: 1, y: 2], pid)
-    :ok = Plan.tick(pid)
+    :increased = Plan.inc_action(pid)
     plan = Plan.get(pid)
     assert %{done: 1, points: 4} = plan.actions |> List.first()
   end
 
   test "keep action in queue when it's done", %{pid: pid, pawn: pawn} do
-    :ok = Plan.add_action(pawn, :test, [x: 1, y: 2], pid)
-    :ok = Plan.tick(pid)
+    :ok = Plan.add_action(pawn, :move, [x: 1, y: 3], pid)
+    {:executable, %Action{}} = Plan.inc_action(pid)
     plan = Plan.get(pid)
     assert %{done: 1} = plan.actions |> List.first()
   end

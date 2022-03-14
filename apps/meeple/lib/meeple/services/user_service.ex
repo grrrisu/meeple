@@ -6,6 +6,9 @@ defmodule Meeple.Service.User do
   alias Meeple.Board
 
   def execute(:add_action, params) do
+    if Meeple.started?(),
+      do: raise("You can not add an action while the day simulation is running")
+
     Board.add_action(params[:pawn], params[:action], x: params[:x], y: params[:y])
     [{:plan_updated, :action_added}]
   end

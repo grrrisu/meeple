@@ -58,12 +58,11 @@ defmodule Meeple.Board do
     Tableau.hour()
   end
 
-  def next_hour() do
-    Plan.tick()
-    Tableau.inc_hour()
+  def inc_action() do
+    Plan.inc_action()
   end
 
-  def running?() do
-    SimulationLoop.running?()
+  def next_hour() do
+    Tableau.inc_hour()
   end
 end

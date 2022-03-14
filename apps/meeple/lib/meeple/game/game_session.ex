@@ -22,8 +22,8 @@ defmodule Meeple.GameSession do
   end
 
   @impl true
-  def handle_info({:grid_changed}, state) do
-    Logger.info("grid changed")
+  def handle_info({:action_executed, action: _action}, state) do
+    Logger.info("action executed")
     Board.update_fog_of_war()
     broadcast_grid_updated()
     {:noreply, state}

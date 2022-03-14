@@ -28,4 +28,8 @@ defmodule Meeple do
   def tick() do
     send_command({:sim, :tick})
   end
+
+  def execute_action(action) do
+    send_command({:sim, :execute, action: action})
+  end
 end
