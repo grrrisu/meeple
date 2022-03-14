@@ -65,24 +65,32 @@ defmodule Meeple.Plan do
     %{state | planned: actions, total_points: total_points}
   end
 
-  def tick(pid \\ __MODULE__) do
-    Agent.cast(pid, fn %{planned: actions} = state ->
-      case :queue.is_empty(actions) do
-        false -> inc_action(state)
-        true -> state
-      end
+  @spec inc_action(atom | pid | {atom, any} | {:via, atom, any}) ::
+          :empty | :increased | {:executable, %Action{}}
+  def inc_action(pid \\ __MODULE__) do
+    Agent.get_and_update(pid, fn state ->
+      state
+      |> current_planned_action()
+      |> inc_done()
+      |> executable_action()
     end)
   end
 
-  def inc_action(%{planned: planned, done: done} = state) do
-    {{:value, action}, planned} = :queue.out(planned)
-    action = %Action{action | done: action.done + 1}
+  def current_planned_action(state), do: {:queue.out(state.planned), state}
 
-    if action.done == action.points do
-      Action.execute(action)
-      %{state | planned: planned, done: :queue.in(action, done)}
-    else
-      %{state | planned: :queue.in_r(action, planned)}
-    end
+  def inc_done({{{:value, action}, planned}, state}) do
+    {%Action{action | done: action.done + 1}, planned, state}
   end
+
+  def inc_done({{:empty, planned}, state}), do: {:empty, planned, state}
+
+  def executable_action({%Action{points: points, done: points} = action, planned, state}) do
+    {{:executable, action}, %{state | planned: planned, done: :queue.in(action, state.done)}}
+  end
+
+  def executable_action({%Action{} = action, planned, state}) do
+    {:increased, %{state | planned: :queue.in_r(action, planned)}}
+  end
+
+  def executable_action({:empty, _planned, state}), do: {:empty, state}
 end

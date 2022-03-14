@@ -105,6 +105,7 @@ defmodule MeepleWeb.BoardLive.Index do
   end
 
   def handle_info({:error, message}, socket) do
+    Logger.warn(message)
     {:noreply, socket |> clear_flash() |> put_flash(:error, message)}
   end
 

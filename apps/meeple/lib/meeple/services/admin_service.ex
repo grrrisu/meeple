@@ -14,7 +14,20 @@ defmodule Meeple.Service.Admin do
   end
 
   def execute(:next_hour, []) do
-    hour = Board.next_hour()
-    [{:hour_updated, hour: hour}]
+    [{:hour_updated, hour: Board.next_hour()}] ++ inc_action()
+  end
+
+  defp inc_action() do
+    case Board.inc_action() do
+      :empty ->
+        []
+
+      :increased ->
+        [{:plan_updated, :action_increased}]
+
+      {:executable, action} ->
+        :ok = Meeple.execute_action(action)
+        [{:plan_updated, :action_prepared}]
+    end
   end
 end
