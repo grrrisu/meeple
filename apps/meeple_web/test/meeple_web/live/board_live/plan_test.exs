@@ -2,7 +2,7 @@ defmodule MeepleWeb.BoardLive.PlanTest do
   use MeepleWeb.ConnCase
   import Phoenix.LiveViewTest
 
-  alias Meeple.{Board, Pawn}
+  alias Meeple.{Action, Board, Pawn}
   alias Meeple.Service.Admin
 
   setup do
@@ -17,7 +17,14 @@ defmodule MeepleWeb.BoardLive.PlanTest do
   test "add action to plan wall", %{conn: conn} do
     {:ok, view, _html} = live(conn, "/board")
 
-    Board.add_action(%Pawn{id: 1, x: 1, y: 2}, :discover, x: 1, y: 2)
+    Board.add_action(%Action{
+      pawn: %Pawn{id: 1, x: 1, y: 2},
+      name: :discover,
+      x: 1,
+      y: 2,
+      points: 4
+    })
+
     send(view.pid, {:plan_updated})
 
     {:ok, view, _html} = live(conn, "/board")
