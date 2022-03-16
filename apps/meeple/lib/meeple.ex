@@ -14,7 +14,7 @@ defmodule Meeple do
   end
 
   def add_action(pawn, action, params) do
-    send_command({:user, :add_action, Keyword.merge(params, pawn: pawn, action: action)})
+    send_command({:user, :add_action, pawn: pawn, action: action, x: params[:x], y: params[:y]})
   end
 
   def start_day() do
