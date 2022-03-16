@@ -46,8 +46,16 @@ defmodule Meeple.Board do
     Tableau.update_pawn(pawn)
   end
 
-  def add_action(%Pawn{} = pawn, action, opts) do
-    Plan.add_action(pawn, action, opts)
+  def get_plan() do
+    Plan.get()
+  end
+
+  def get_planned_actions() do
+    Plan.get_planned()
+  end
+
+  def add_action(action) do
+    Plan.add_action(action)
   end
 
   def clear_plan() do
