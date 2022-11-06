@@ -45,7 +45,7 @@ defmodule MeepleWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {MeepleWeb.LayoutView, "live.html"}
+        layout: {MeepleWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end

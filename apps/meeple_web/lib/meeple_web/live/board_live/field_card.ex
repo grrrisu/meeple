@@ -64,11 +64,13 @@ defmodule MeepleWeb.BoardLive.FieldCard do
         (x - 4) * 75 - 20
       end
 
+    assigns = assign(assigns, left: left)
+
     ~H"""
     <div
       id="field-card-border"
       class="bg-gray-50 rounded-lg drop-shadow-md border border-gray-800 p-4 absolute transition-all duration-500 ease-out"
-      style={"width: 300px; top: 30px; left: #{left}px"}
+      style={"width: 300px; top: 30px; left: #{@left}px"}
       x-show="showFieldCard" x-cloak
       @close="showFieldCard = false"
       x-transition:enter="transition ease-out duration-300"
@@ -92,22 +94,25 @@ defmodule MeepleWeb.BoardLive.FieldCard do
       |> Atom.to_string()
       |> String.capitalize()
 
+    assigns = assign(assigns, title: title)
+
     ~H"""
     <div class="text-center font-bold absolute text-steelblue-800"
       style="width: 280px; height: 30px; top: 13px; right: 10px; background-image: url('/images/ui/card_title.svg'); background-size: 280px 30px">
-      <h4 class=""><%= title %></h4>
+      <h4 class=""><%= @title %></h4>
     </div>
     """
   end
 
   def card_close_button(assigns) do
     click_event = (Map.get(assigns, :click) && assigns.click) || []
+    assigns = assign(assigns, click_event: click_event)
 
     ~H"""
     <div class="grid justify-center">
       <div class="text-center text-steelblue-800 pt-0.5"
         style="width: 159px; height: 30px; top: 13px; right: 10px; background-image: url('/images/ui/button.svg'); background-size: 159px 30px"
-        {click_event}
+        {@click_event}
         @click="showFieldCard = false">
         <%= @text %>
       </div>
@@ -125,13 +130,15 @@ defmodule MeepleWeb.BoardLive.FieldCard do
       "phx-value-y": assigns.y
     ]
 
+    assigns = assign(assigns, path_costs: path_costs, click: click)
+
     ~H"""
     <div>
       <p>
-      Path costs: <%= path_costs %>
+      Path costs: <%= @path_costs %>
       </p>
       Actions available:<br/>
-      <.card_close_button text="Return Home" click={click} />
+      <.card_close_button text="Return Home" click={@click} />
     </div>
     """
   end
@@ -157,13 +164,15 @@ defmodule MeepleWeb.BoardLive.FieldCard do
       "phx-value-y": assigns.y
     ]
 
+    assigns = assign(assigns, path_costs: path_costs, click: click)
+
     ~H"""
     <div>
       <p>
-      Path costs: <%= path_costs %>
+      Path costs: <%= @path_costs %>
       </p>
       Actions available:<br/>
-      <.card_close_button text="Discover" click={click} />
+      <.card_close_button text="Discover" click={@click} />
     </div>
     """
   end
