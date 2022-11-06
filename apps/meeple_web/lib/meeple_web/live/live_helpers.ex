@@ -1,5 +1,5 @@
 defmodule MeepleWeb.LiveHelpers do
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
 
   def slider_checkbox(assigns) do
     ~H"""
