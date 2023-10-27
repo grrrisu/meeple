@@ -46,7 +46,8 @@ defmodule Meeple.MixProject do
        subdir: "/apps/sim",
        app: false,
        override: true},
-      {:ximula, path: "../../../ximula/", override: true, app: false, only: [:dev, :test]}
+      {:ximula, git: "https://github.com/grrrisu/ximula.git", override: true, app: false}
+      # {:ximula, path: "../../../ximula/", override: true, app: false, only: [:dev, :test]}
       # {:sim,
       #  path: "../../../thundermoon_umbrella/apps/sim",
       #  override: true,
