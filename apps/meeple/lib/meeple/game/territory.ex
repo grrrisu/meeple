@@ -1,7 +1,7 @@
 defmodule Meeple.Territory do
   use Agent
 
-  alias Sim.Grid
+  alias Ximula.Grid
   alias Meeple.Territory.One
   alias Meeple.Territory.Test, as: TestTerritory
 
@@ -18,7 +18,7 @@ defmodule Meeple.Territory do
   end
 
   def get(pid \\ __MODULE__) do
-    Agent.get(pid, &Grid.map(&1))
+    Agent.get(pid, &Grid.sorted_list(&1, :cartesian))
   end
 
   def dimensions(pid \\ __MODULE__) do

@@ -45,7 +45,8 @@ defmodule Meeple.MixProject do
        git: "https://github.com/grrrisu/thundermoon-umbrella.git",
        subdir: "/apps/sim",
        app: false,
-       override: true}
+       override: true},
+      {:ximula, path: "../../../ximula/", override: true, app: false, only: [:dev, :test]}
       # {:sim,
       #  path: "../../../thundermoon_umbrella/apps/sim",
       #  override: true,

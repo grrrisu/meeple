@@ -1,5 +1,5 @@
 defmodule Meeple.Territory.One do
-  alias Sim.Grid
+  alias Ximula.Grid
 
   alias Meeple.Pawn
 

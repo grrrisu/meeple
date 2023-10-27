@@ -10,7 +10,7 @@ defmodule Meeple.FogOfWar do
   """
   use Agent
 
-  alias Sim.Grid
+  alias Ximula.Grid
   alias Meeple.Territory
 
   alias Meeple.Territory.One
@@ -74,7 +74,7 @@ defmodule Meeple.FogOfWar do
   end
 
   defp get_grid(%{grid: nil}), do: raise("grid has not yet been created")
-  defp get_grid(%{grid: grid}), do: Grid.map(grid)
+  defp get_grid(%{grid: grid}), do: Grid.sorted_list(grid, :cartesian)
 
   defp get_field(_x, _y, %{grid: nil}), do: raise("grid has not yet been created")
   defp get_field(x, y, %{grid: grid}), do: Grid.get(grid, x, y)

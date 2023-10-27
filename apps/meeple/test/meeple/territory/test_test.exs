@@ -2,7 +2,7 @@ defmodule Meeple.Territory.TestTest do
   use ExUnit.Case, async: true
 
   alias Meeple.Territory.Test, as: TestTerritory
-  alias Sim.Grid
+  alias Ximula.Grid
 
   test "create ground" do
     territory = TestTerritory.create_ground(3, 4)
